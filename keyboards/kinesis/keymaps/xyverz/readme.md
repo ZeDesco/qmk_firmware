@@ -10,8 +10,6 @@ I've enabled persistent keymaps for Qwerty, Dvorak and Colemak layers, similar t
 
 Depending on the OS, most of the LEDs are now working in this keymap, but I still have yet to get the Num Pad LED working when switching to the Numpad layer.
 
-Removed the Media layer 2018-12-07
-
 ## Still to do:
 
  * Figure out how to make the Numpad LED work properly.
@@ -40,9 +38,9 @@ Removed the Media layer 2018-12-07
 	                             ,--------------.,--------------.
 	                             | LCtl  | LAlt || RGUI | RCtl  |
 	                      ,------|-------|------||------+-------+-------.
-	                      |      |       | Home || PgUp | Enter |       |
-	                      | BkSp |  Del  |------||------|   /   | Space |
-	                      |      |       | End  || PgDn | KeyPd |       |
+	                      |      |  Del  | Home || PgUp | Enter |       |
+	                      | BkSp |   /   |------||------|   /   | Space |
+	                      |      | Media | End  || PgDn | KeyPd |       |
 	                      `---------------------'`----------------------'
 
 ### Layer 1: QWERTY layer
@@ -61,9 +59,9 @@ Removed the Media layer 2018-12-07
 	                             ,--------------.,--------------.
 	                             | LCtl  | LAlt || RGUI | RCtl  |
 	                      ,------|-------|------||------+-------+-------.
-	                      |      |       | Home || PgUp | Enter |       |
-	                      | BkSp |  Del  |------||------|   /   | Space |
-	                      |      |       | End  || PgDn | KeyPd |       |
+	                      |      |  Del  | Home || PgUp | Enter |       |
+	                      | BkSp |   /   |------||------|   /   | Space |
+	                      |      | Media | End  || PgDn | KeyPd |       |
 	                      `---------------------'`----------------------'
 	 
 ### Keymap 2: Colemak layer
@@ -82,12 +80,35 @@ Removed the Media layer 2018-12-07
 	                             ,--------------.,--------------.
 	                             | LCtl  | LAlt || RGUI | RCtl  |
 	                      ,------|-------|------||------+-------+-------.
-	                      |      |       | Home || PgUp | Enter |       |
-	                      | BkSp |  Del  |------||------|   /   | Space |
-	                      |      |       | End  || PgDn | KeyPd |       |
+	                      |      |  Del  | Home || PgUp | Enter |       |
+	                      | BkSp |   /   |------||------|   /   | Space |
+	                      |      | Media | End  || PgDn | KeyPd |       |
 	                      `---------------------'`----------------------'
 
-### layer 3 : Keypad layer
+### layer 3 : Media layer
+
+	,-------------------------------------------.,-------------------------------------------.
+	|   F11  |  F1  |  F2  |  F3  |  F4  |  F5  ||  F6  |  F7  |  F8  |  F9  |  F10 |  F12   |
+	|--------+------+------+------+------+------||------+------+------+------+------+--------|
+	|        |      |      |      |      |      ||      |      |      |      |      |        |
+	|--------+------+------+------+------+------||------+------+------+------+------+--------|
+	|        |      | Mute | Vol- | Vol+ |      ||      |      |      |      |      |        |
+	|--------+------+------+------+------+------||------+------+------+------+------+--------|
+	|        | Stop | Prev | Play | Next | Sel  ||      |      |      |      |      |        |
+	`--------+------+------+------+------+------'`------+------+------+------+------+--------'
+	         |      |      |      |      |              |      |      |      |      |
+	         `---------------------------'              `---------------------------'
+	                              ,-------------.,-------------.
+	                              |      |      ||      |      |
+	                       ,------|------|------||------+------+------.
+	                       |      |      |      ||      |      |      |
+	                       |      |      |------||------|      |      |
+	                       |      |      |      ||      |      |      |
+	                       `--------------------'`--------------------'
+
+
+
+### Keymap 4: Keypad layer
 
 	,-------------------------------------------.,-------------------------------------------.
 	| Power  |      |      |      |      |      ||      | NmLk | KP = | KP / | KP * |        |

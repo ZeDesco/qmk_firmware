@@ -2,10 +2,8 @@
 
 # These are defaults based on what has been implemented for ARM boards
 AUDIO_ENABLE = yes
-WS2812_DRIVER = bitbang
-
-# Force task driven PWM until ARM can provide automatic configuration
-BACKLIGHT_DRIVER = software
+RGBLIGHT_ENABLE = no
+BACKLIGHT_ENABLE = no
 
 # The rest of these settings shouldn't change
 

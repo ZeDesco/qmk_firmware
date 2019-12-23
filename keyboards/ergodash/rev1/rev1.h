@@ -3,7 +3,9 @@
 
 #include "ergodash.h"
 
+//void promicro_bootloader_jmp(bool program);
 #include "quantum.h"
+
 
 #ifdef USE_I2C
 #include <stddef.h>
@@ -12,6 +14,8 @@
     #include <avr/interrupt.h>
 #endif
 #endif
+
+//void promicro_bootloader_jmp(bool program);
 
 #ifndef FLIP_HALF
 // Standard Keymap

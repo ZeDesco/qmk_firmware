@@ -16,11 +16,9 @@
 #include "xd96.h"
 
 #define CAPS_PIN B6
-#define NUMLOCK_PIN C6
 
 void keyboard_pre_init_kb(void) {
   setPinOutput(CAPS_PIN);
-  setPinOutput(NUMLOCK_PIN);
 
   keyboard_pre_init_user();
 }
@@ -30,12 +28,6 @@ void led_set_kb(uint8_t usb_led) {
     writePinLow(CAPS_PIN);
   } else {
     writePinHigh(CAPS_PIN);
-  }
-  
-  if (IS_LED_ON(usb_led, USB_LED_NUM_LOCK)) {
-    writePinLow(NUMLOCK_PIN);
-  } else {
-    writePinHigh(NUMLOCK_PIN);
   }
 
   led_set_user(usb_led);

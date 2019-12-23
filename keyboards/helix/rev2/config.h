@@ -16,7 +16,8 @@ You should have received a copy of the GNU General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#pragma once
+#ifndef REV2_CONFIG_H
+#define REV2_CONFIG_H
 
 /* USB Device descriptor parameter */
 #define VENDOR_ID       0xFEED
@@ -33,10 +34,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #define USE_I2C
 #define USE_SERIAL
 //#define USE_MATRIX_I2C
-
-/* Soft Serial defines */
-#define SOFT_SERIAL_PIN D2
-#define SERIAL_USE_MULTI_TRANSACTION
 
 /* Select hand configuration */
 #define MASTER_LEFT
@@ -91,7 +88,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define RGBLIGHT_ANIMATIONS : see ./rules.mk: LED_ANIMATIONS = yes or no
 //    see ./rules.mk: LED_BACK_ENABLE or LED_UNDERGLOW_ENABLE set yes
 #ifdef RGBLED_BACK
-  #if MATRIX_ROWS == 8 // HELIX_ROWS == 4
+  #if HELIX_ROWS == 4
     #define RGBLED_NUM 25
   #else
     #define RGBLED_NUM 32
@@ -104,7 +101,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #if RGBLED_NUM <= 6
     #define RGBLIGHT_LIMIT_VAL 255
   #else
-    #if MATRIX_ROWS == 8 // HELIX_ROWS == 4
+    #if HELIX_ROWS == 4
       #define RGBLIGHT_LIMIT_VAL 130
     #else
       #define RGBLIGHT_LIMIT_VAL 120
@@ -115,7 +112,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   #if RGBLED_NUM <= 6
     #define RGBLIGHT_LIMIT_VAL 90
   #else
-    #if MATRIX_ROWS == 8 // HELIX_ROWS == 4
+    #if HELIX_ROWS == 4
       #define RGBLIGHT_LIMIT_VAL 45
     #else
       #define RGBLIGHT_LIMIT_VAL 35
@@ -158,3 +155,4 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //#define NO_ACTION_MACRO
 //#define NO_ACTION_FUNCTION
 
+#endif

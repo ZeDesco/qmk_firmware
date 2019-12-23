@@ -1,15 +1,14 @@
 # MCU name
 MCU = atmega32u4
 
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
+# Bootloader
+#     This definition is optional, and if your keyboard supports multiple bootloaders of
+#     different sizes, comment this out, and the correct address will be loaded
+#     automatically (+60). See bootloader.mk for all options.
 BOOTLOADER = qmk-dfu
+
+# Interrupt driven control endpoint task(+60)
+OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
 
 # Build Options
 #   change to "no" to disable the options, or define them in the Makefile in

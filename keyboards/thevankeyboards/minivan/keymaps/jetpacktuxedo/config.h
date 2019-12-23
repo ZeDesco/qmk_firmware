@@ -1,4 +1,7 @@
-#pragma once
+#ifndef CONFIG_USER_H
+#define CONFIG_USER_H
+
+#include "../../config.h"
 
 #define PERMISSIVE_HOLD
-#define RGBLIGHT_EFFECT_BREATHING
+#endif

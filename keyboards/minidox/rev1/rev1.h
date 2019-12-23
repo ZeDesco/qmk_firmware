@@ -3,7 +3,10 @@
 
 #include "../minidox.h"
 
+//void promicro_bootloader_jmp(bool program);
 #include "quantum.h"
+
+//void promicro_bootloader_jmp(bool program);
 
 // readability
 #define ___ KC_NO

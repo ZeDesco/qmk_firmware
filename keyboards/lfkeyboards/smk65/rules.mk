@@ -1,15 +1,17 @@
-# MCU name
 MCU = at90usb646
-
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
-BOOTLOADER = atmel-dfu
+OPT_DEFS += -DBOOTLOADER_SIZE=4096
 
 # Extra source files for IS3731 lighting
 SRC = TWIlib.c issi.c lighting.c
+
+# Processor frequency.
+F_CPU = 16000000
+
+# Target architecture (see library "Board Types" documentation).
+ARCH = AVR8
+
+# Input clock frequency.
+F_USB = $(F_CPU)
+
+# Interrupt driven control endpoint task(+60)
+OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT

@@ -1,8 +1,11 @@
 #pragma once
+#define DISABLE_JTAG // The keyboard uses PF4 and PF7, which are used by JTAG.
 
 #include "lets_split.h"
 
+//void promicro_bootloader_jmp(bool program);
 #include "quantum.h"
+
 
 #ifdef USE_I2C
 #include <stddef.h>
@@ -11,6 +14,8 @@
 	#include <avr/interrupt.h>
 #endif
 #endif
+
+//void promicro_bootloader_jmp(bool program);
 
 #ifndef FLIP_HALF
 // Standard Keymap

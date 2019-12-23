@@ -234,34 +234,26 @@ qmk: $(BUILD_DIR)/$(TARGET).bin
 	zip $(TARGET).qmk -urj $(BUILD_DIR)/$(TARGET).json
 	printf "@ $(TARGET).json\n@=info.json\n" | zipnote -w $(TARGET).qmk
 
-define EXEC_DFU_UTIL
-	until $(DFU_UTIL) -l | grep -q "Found DFU"; do\
-		printf "$(MSG_BOOTLOADER_NOT_FOUND)" ;\
-		sleep 5 ;\
-	done
-	$(DFU_UTIL) $(DFU_ARGS) -D $(BUILD_DIR)/$(TARGET).bin
-endef
-
 dfu-util: $(BUILD_DIR)/$(TARGET).bin cpfirmware sizeafter
-	$(call EXEC_DFU_UTIL)
+	$(DFU_UTIL) $(DFU_ARGS) -D $(BUILD_DIR)/$(TARGET).bin
 
-# Legacy alias
-dfu-util-wait: dfu-util
 
-# TODO: Remove once ARM has a way to configure EECONFIG_HANDEDNESS
-#       within the emulated eeprom via dfu-util or another tool
-ifneq (,$(filter $(MAKECMDGOALS),dfu-util-split-left))
-    OPT_DEFS += -DINIT_EE_HANDS_LEFT
+ifneq ($(strip $(TIME_DELAY)),)
+  TIME_DELAY = $(strip $(TIME_DELAY))
+else
+  TIME_DELAY = 10
 endif
-
-ifneq (,$(filter $(MAKECMDGOALS),dfu-util-split-right))
-    OPT_DEFS += -DINIT_EE_HANDS_RIGHT
-endif
-
-dfu-util-split-left: dfu-util
-
-dfu-util-split-right: dfu-util
-
+dfu-util-wait: $(BUILD_DIR)/$(TARGET).bin cpfirmware sizeafter
+	echo "Preparing to flash firmware. Please enter bootloader now..." ;\
+  COUNTDOWN=$(TIME_DELAY) ;\
+  while [[ $$COUNTDOWN -ge 1 ]] ; do \
+        echo "Flashing in $$COUNTDOWN ..."; \
+        sleep 1 ;\
+        ((COUNTDOWN = COUNTDOWN - 1)) ; \
+  done; \
+  echo "Flashing $(TARGET).bin" ;\
+  sleep 1 ;\
+  $(DFU_UTIL) $(DFU_ARGS) -D $(BUILD_DIR)/$(TARGET).bin
 
 st-link-cli: $(BUILD_DIR)/$(TARGET).hex sizeafter
 	$(ST_LINK_CLI) $(ST_LINK_ARGS) -q -c SWD -p $(BUILD_DIR)/$(TARGET).hex -Rst
@@ -276,24 +268,7 @@ ifndef TEENSY_LOADER_CLI
     endif
 endif
 
-define EXEC_TEENSY
-	$(TEENSY_LOADER_CLI) -mmcu=$(MCU_LDSCRIPT) -w -v $(BUILD_DIR)/$(TARGET).hex
-endef
-
 teensy: $(BUILD_DIR)/$(TARGET).hex cpfirmware sizeafter
-	$(call EXEC_TEENSY)
+	$(TEENSY_LOADER_CLI) -mmcu=$(MCU_LDSCRIPT) -w -v $(BUILD_DIR)/$(TARGET).hex
 
 bin: $(BUILD_DIR)/$(TARGET).bin sizeafter
-	$(COPY) $(BUILD_DIR)/$(TARGET).bin $(TARGET).bin;
-
-
-flash: $(BUILD_DIR)/$(TARGET).bin cpfirmware sizeafter
-ifeq ($(strip $(BOOTLOADER)),dfu)
-	$(call EXEC_DFU_UTIL)
-else ifeq ($(strip $(MCU_FAMILY)),KINETIS)
-	$(call EXEC_TEENSY)
-else ifeq ($(strip $(MCU_FAMILY)),STM32)
-	$(call EXEC_DFU_UTIL)
-else
-	$(PRINT_OK); $(SILENT) || printf "$(MSG_FLASH_BOOTLOADER)"
-endif

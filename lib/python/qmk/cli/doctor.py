@@ -2,74 +2,46 @@
 
 Check up for QMK environment.
 """
-import platform
 import shutil
-import subprocess
+import platform
+import os
 
 from milc import cli
 
 
-@cli.subcommand('Basic QMK environment checks')
-def doctor(cli):
+@cli.entrypoint('Basic QMK environment checks')
+def main(cli):
     """Basic QMK environment checks.
 
     This is currently very simple, it just checks that all the expected binaries are on your system.
 
     TODO(unclaimed):
+        * [ ] Run the binaries to make sure they work
         * [ ] Compile a trivial program with each compiler
         * [ ] Check for udev entries on linux
     """
-    cli.log.info('QMK Doctor is checking your environment.')
 
-    # Make sure the basic CLI tools we need are available and can be executed.
-    binaries = ['dfu-programmer', 'avrdude', 'dfu-util', 'avr-gcc', 'arm-none-eabi-gcc', 'bin/qmk']
+    binaries = ['dfu-programmer', 'avrdude', 'dfu-util', 'avr-gcc', 'arm-none-eabi-gcc']
+
+    cli.log.info('QMK Doctor is Checking your environment')
+
     ok = True
-
     for binary in binaries:
         res = shutil.which(binary)
         if res is None:
-            cli.log.error("{fg_red}QMK can't find %s in your path.", binary)
+            cli.log.error('{fg_red}QMK can\'t find ' + binary + ' in your path')
             ok = False
-        else:
-            check = subprocess.run([binary, '--version'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=5)
-            if check.returncode in [0, 1]:
-                cli.log.info('Found {fg_cyan}%s', binary)
-            else:
-                cli.log.error("{fg_red}Can't run `%s --version`", binary)
-                ok = False
 
-    # Determine our OS and run platform specific tests
-    OS = platform.system()  # noqa (N806), uppercase name is ok in this instance
-
+    OS = platform.system()
     if OS == "Darwin":
-        cli.log.info("Detected {fg_cyan}macOS.")
-
+        cli.log.info("Detected {fg_cyan}macOS")
     elif OS == "Linux":
-        cli.log.info("Detected {fg_cyan}Linux.")
-        if shutil.which('systemctl'):
-            mm_check = subprocess.run(['systemctl', 'list-unit-files'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, timeout=10, universal_newlines=True)
-            if mm_check.returncode == 0:
-                mm = False
-                for line in mm_check.stdout.split('\n'):
-                    if 'ModemManager' in line and 'enabled' in line:
-                        mm = True
-
-                if mm:
-                    cli.log.warn("{bg_yellow}Detected ModemManager. Please disable it if you are using a Pro-Micro.")
-
-            else:
-                cli.log.error('{bg_red}Could not run `systemctl list-unit-files`:')
-                cli.log.error(mm_check.stderr)
-
-        else:
-            cli.log.warn("Can't find systemctl to check for ModemManager.")
-
+        cli.log.info("Detected {fg_cyan}linux")
+        test = 'systemctl list-unit-files | grep enabled | grep -i ModemManager'
+        if os.system(test) == 0:
+            cli.log.warn("{bg_yellow}Detected modem manager. Please disable it if you are using Pro Micros")
     else:
-        cli.log.info("Assuming {fg_cyan}Windows.")
+        cli.log.info("Assuming {fg_cyan}Windows")
 
-    # Report a summary of our findings to the user
     if ok:
         cli.log.info('{fg_green}QMK is ready to go')
-    else:
-        cli.log.info('{fg_yellow}Problems detected, please fix these problems before proceeding.')
-        # FIXME(skullydazed): Link to a document about troubleshooting, or discord or something

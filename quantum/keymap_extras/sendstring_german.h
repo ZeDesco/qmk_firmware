@@ -20,8 +20,6 @@
 
 #include "keymap_german.h"
 
-// clang-format off
-
 const bool ascii_to_shift_lut[128] PROGMEM = {
     0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0,

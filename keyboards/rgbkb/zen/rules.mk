@@ -1,15 +1,11 @@
-# MCU name
+# Pro Micro or Elite-C
+# Automagically converted to Proton-C
 MCU = atmega32u4
-
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
-BOOTLOADER = caterina
+F_CPU = 16000000
+ARCH = AVR8
+F_USB = $(F_CPU)
+BOOTLOADER = dfu
+OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
 
 ifeq ($(strip $(CTPC)), yes)
   CONVERT_TO_PROTON_C=yes

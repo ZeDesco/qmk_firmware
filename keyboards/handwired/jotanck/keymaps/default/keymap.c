@@ -3,6 +3,7 @@
 
 #include QMK_KEYBOARD_H
 
+extern keymap_config_t keymap_config;
 
 // Each layer gets a name for readability, which is then used in the keymap matrix below.
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
@@ -78,9 +79,9 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
+uint32_t layer_state_set_user(uint32_t state) {
   #ifdef JOTANCK_LEDS
-  switch (get_highest_layer(state)) {
+  switch (biton32(state)) {
   case _LOWER:
     writePinHigh(JOTANCK_LED1);
     writePinLow(JOTANCK_LED2);
@@ -118,3 +119,4 @@ void matrix_scan_user(void) {
     reset_keyboard();
   }
 }
+

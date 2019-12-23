@@ -2,7 +2,9 @@
 
 #include "zen.h"
 
+//void promicro_bootloader_jmp(bool program);
 #include "quantum.h"
+
 
 #ifdef USE_I2C
 #include <stddef.h>
@@ -11,6 +13,8 @@
     #include <avr/interrupt.h>
 #endif
 #endif
+
+//void promicro_bootloader_jmp(bool program);
 
 #define LAYOUT( \
     k00, k01, k02, k03, k04, k05,               k55, k54, k53, k52, k51, k50, \

@@ -51,14 +51,11 @@ By default, Auto Shift is disabled for any key press that is accompanied by one 
 modifiers. Thus, Ctrl+A that you hold for a really long time is not the same
 as Ctrl+Shift+A.
 
-You can re-enable Auto Shift for modifiers by adding a define to your `config.h`
+You can re-enable Auto Shift for modifiers by adding another rule to your `rules.mk`
 
-```c
-#define AUTO_SHIFT_MODIFIERS
-```
+    AUTO_SHIFT_MODIFIERS = yes
 
 In which case, Ctrl+A held past the `AUTO_SHIFT_TIMEOUT` will be sent as Ctrl+Shift+A
-
 
 ## Configuring Auto Shift
 
@@ -68,12 +65,15 @@ behavior of Auto Shift. This is done by setting various variables the
 
 A sample is
 
-```c
-#pragma once
+    #ifndef CONFIG_USER_H
+    #define CONFIG_USER_H
 
-#define AUTO_SHIFT_TIMEOUT 150
-#define NO_AUTO_SHIFT_SPECIAL
-```
+    #include "../../config.h"
+
+    #define AUTO_SHIFT_TIMEOUT 150
+    #define NO_AUTO_SHIFT_SPECIAL
+
+    #endif
 
 ### AUTO_SHIFT_TIMEOUT (Value in ms)
 

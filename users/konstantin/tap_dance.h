@@ -8,11 +8,10 @@
 #define RCT_RSF TD(TD_RCT_RSF)
 #define RSF_RCT TD(TD_RSF_RCT)
 
-#ifdef LAYER_FN
-    #define LSFT_FN TD(TD_LSFT_FN)
-    #define RCTL_FN TD(TD_RCTL_FN)
-    #define FN_RCTL TD(TD_FN_RCTL)
-#endif
+#define LSFT_FN TD(TD_LSFT_FN)
+#define RCTL_FN TD(TD_RCTL_FN)
+
+#define FN_RCTL TD(TD_FN_RCTL)
 
 enum tap_dance {
     TD_DST_A_R,
@@ -21,9 +20,8 @@ enum tap_dance {
     TD_RCT_RSF,
     TD_RSF_RCT,
 
-#ifdef LAYER_FN
     TD_LSFT_FN,
     TD_RCTL_FN,
+
     TD_FN_RCTL,
-#endif
 };

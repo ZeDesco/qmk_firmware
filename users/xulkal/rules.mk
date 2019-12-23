@@ -1,6 +1,7 @@
 SRC += xulkal.c \
     process_records.c \
-    custom_tap_dance.c
+    custom_tap_dance.c \
+    timer_utils.c
 
 # Some usual defaults
 MOUSEKEY_ENABLE         = no    # Mouse keys (+4700)

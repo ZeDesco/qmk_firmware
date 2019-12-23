@@ -9,12 +9,11 @@ Hardware Supported: ATMEGA328p with vusb [PCB](https://github.com/yiancar/gingha
 Hardware Availability: https://yiancar-designs.com/, https://novelkeys.xyz, https://mechboards.co.uk/  
 
 Make example for this keyboard (after setting up your build environment):
-
     make gingham:default
 
-Flashing example for this keyboard:
-
-    make gingham:default:flash
+Flash firmware:
+    // In bootloader mode
+    make gingham:default:program
 
 Bootloader:
 use usbasploader HSGW's my repository.

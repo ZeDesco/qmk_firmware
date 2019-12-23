@@ -3,6 +3,8 @@
 // Preonic keyboards by Jack Humbert.
 
 #include QMK_KEYBOARD_H
+#include "action_layer.h"
+#include "eeconfig.h"
 
 extern keymap_config_t keymap_config;
 
@@ -10,16 +12,13 @@ extern keymap_config_t keymap_config;
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
 // Layer names don't all need to be of the same length, obviously, and you can also skip them
 // entirely and just use numbers.
-
-enum layer_names {
-  _DVORAK,
-  _QWERTY,
-  _COLEMAK,
-  _DVORMAC,
-  _LOWER,
-  _RAISE,
-  _ADJUST
-};
+#define _DVORAK 0
+#define _QWERTY 1
+#define _COLEMAK 2
+#define _DVORMAC 3
+#define _LOWER 4
+#define _RAISE 5
+#define _ADJUST 16
 
 enum planck_keycodes {
   DVORAK = SAFE_RANGE,
@@ -28,7 +27,7 @@ enum planck_keycodes {
   DVORMAC,
   LOWER,
   RAISE,
-  ADJUST
+  BACKLIT
 };
 
 // Adding macros to make the keymaps below much easier to read.
@@ -38,9 +37,6 @@ enum planck_keycodes {
 #define ALTENT ALT_T(KC_ENT)
 #define ESCTRL CTL_T(KC_ESC)
 #define TABALT ALT_T(KC_TAB)
-#define ADJUST MO(_ADJUST)
-#define LOWER MO(_LOWER)
-#define RAISE MO(_RAISE)
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   /* Dvorak Layer
@@ -163,31 +159,57 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   ),
 };
 
-layer_state_t layer_state_set_user(layer_state_t state) {
-  return update_tri_layer_state(state, _LOWER, _RAISE, _ADJUST);
+void persistent_default_layer_set(uint16_t default_layer) {
+  eeconfig_update_default_layer(default_layer);
+  default_layer_set(default_layer);
 }
+
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   switch (keycode) {
-    case DVORAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_DVORAK);
-      }
-      return false;
-    case COLEMAK:
-      if (record->event.pressed) {
-        set_single_persistent_default_layer(_COLEMAK);
-      }
-      return false;
     case QWERTY:
       if (record->event.pressed) {
-        set_single_persistent_default_layer(_QWERTY);
+        persistent_default_layer_set(1UL<<_QWERTY);
       }
       return false;
+      break;
+    case COLEMAK:
+      if (record->event.pressed) {
+        persistent_default_layer_set(1UL<<_COLEMAK);
+      }
+      return false;
+      break;
+    case DVORAK:
+      if (record->event.pressed) {
+        persistent_default_layer_set(1UL<<_DVORAK);
+      }
+      return false;
+      break;
     case DVORMAC:
       if (record->event.pressed) {
-        set_single_persistent_default_layer(_DVORMAC);
+        persistent_default_layer_set(1UL<<_DVORMAC);
       }
       return false;
+      break;
+    case LOWER:
+      if (record->event.pressed) {
+        layer_on(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_LOWER);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
+      break;
+    case RAISE:
+      if (record->event.pressed) {
+        layer_on(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      } else {
+        layer_off(_RAISE);
+        update_tri_layer(_LOWER, _RAISE, _ADJUST);
+      }
+      return false;
+      break;
   }
   return true;
-}
+};

@@ -1,15 +1,10 @@
 # MCU name
 MCU = atmega32u4
-
-# Bootloader selection
-#   Teensy       halfkay
-#   Pro Micro    caterina
-#   Atmel DFU    atmel-dfu
-#   LUFA DFU     lufa-dfu
-#   QMK DFU      qmk-dfu
-#   ATmega32A    bootloadHID
-#   ATmega328P   USBasp
+F_CPU = 16000000
+ARCH = AVR8
+F_USB = $(F_CPU)
 BOOTLOADER = caterina
+OPT_DEFS += -DINTERRUPT_CONTROL_ENDPOINT
 
 BOOTMAGIC_ENABLE = no       # Virtual DIP switch configuration(+1000)
 MOUSEKEY_ENABLE = yes       # Mouse keys(+4700)

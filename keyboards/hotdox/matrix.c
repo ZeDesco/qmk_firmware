@@ -9,6 +9,9 @@
 #include "matrix.h"
 #include "hotdox.h"
 #include "left.h"
+#ifdef DEBUG_MATRIX_SCAN_RATE
+#include  "timer.h"
+#endif
 
 /*
  * This constant define not debouncing time in msecs, but amount of matrix
@@ -37,6 +40,12 @@ static matrix_row_t read_cols(uint8_t row);
 static void init_cols(void);
 static void unselect_rows(void);
 static void select_row(uint8_t row);
+
+#ifdef DEBUG_MATRIX_SCAN_RATE
+uint32_t matrix_timer;
+uint32_t matrix_scan_count;
+#endif
+
 
 __attribute__ ((weak))
 void matrix_init_user(void) {}
@@ -68,6 +77,10 @@ uint8_t matrix_cols(void)
 
 void matrix_init(void)
 {
+  // disable JTAG
+  MCUCR = (1<<JTD);
+  MCUCR = (1<<JTD);
+
   unselect_rows();
   init_cols();
 
@@ -81,7 +94,13 @@ void matrix_init(void)
     }
   }
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+  matrix_timer = timer_read32();
+  matrix_scan_count = 0;
+#endif
+
   matrix_init_quantum();
+
 }
 
 void matrix_power_up(void) {
@@ -92,6 +111,11 @@ void matrix_power_up(void) {
   for (uint8_t i=0; i < MATRIX_ROWS; i++) {
     matrix[i] = 0;
   }
+
+#ifdef DEBUG_MATRIX_SCAN_RATE
+  matrix_timer = timer_read32();
+  matrix_scan_count = 0;
+#endif
 }
 
 // Returns a matrix_row_t whose bits are set if the corresponding key should be
@@ -122,6 +146,20 @@ uint8_t matrix_scan(void)
 {
   left_scan();
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+  matrix_scan_count++;
+
+  uint32_t timer_now = timer_read32();
+  if (TIMER_DIFF_32(timer_now, matrix_timer)>1000) {
+    print("matrix scan frequency: ");
+    pdec(matrix_scan_count);
+    print("\n");
+    matrix_print();
+
+    matrix_timer = timer_now;
+    matrix_scan_count = 0;
+  }
+#endif
   for (uint8_t i = 0; i < MATRIX_ROWS; i++) {
     select_row(i);
     wait_us(30);  // without this wait read unstable value.

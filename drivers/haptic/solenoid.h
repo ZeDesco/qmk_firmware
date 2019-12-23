@@ -18,19 +18,23 @@
 #pragma once
 
 #ifndef SOLENOID_DEFAULT_DWELL
-#    define SOLENOID_DEFAULT_DWELL 12
+#define SOLENOID_DEFAULT_DWELL 12
 #endif
 
 #ifndef SOLENOID_MAX_DWELL
-#    define SOLENOID_MAX_DWELL 100
+#define SOLENOID_MAX_DWELL 100
 #endif
 
 #ifndef SOLENOID_MIN_DWELL
-#    define SOLENOID_MIN_DWELL 4
+#define SOLENOID_MIN_DWELL 4
+#endif
+
+#ifndef SOLENOID_ACTIVE
+#define SOLENOID_ACTIVE false
 #endif
 
 #ifndef SOLENOID_PIN
-#    error SOLENOID_PIN not defined
+#define SOLENOID_PIN F6
 #endif
 
 void solenoid_buzz_on(void);

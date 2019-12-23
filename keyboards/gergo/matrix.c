@@ -27,6 +27,9 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "util.h"
 #include "debounce.h"
 #include QMK_KEYBOARD_H
+#ifdef DEBUG_MATRIX_SCAN_RATE
+#   include  "timer.h"
+#endif
 
 #ifdef BALLER
 #include <avr/interrupt.h>
@@ -121,6 +124,12 @@ static void enableInterrupts(void);
 static uint8_t mcp23018_reset_loop;
 // static uint16_t mcp23018_reset_loop;
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+uint32_t matrix_timer;
+uint32_t matrix_scan_count;
+#endif
+
+
 __attribute__ ((weak)) void matrix_init_user(void) {}
 
 __attribute__ ((weak)) void matrix_scan_user(void) {}
@@ -152,6 +161,10 @@ void matrix_init(void) {
     raw_matrix[i] = 0;
   }
 
+#ifdef DEBUG_MATRIX_SCAN_RATE
+    matrix_timer      = timer_read32();
+    matrix_scan_count = 0;
+#endif
     debounce_init(MATRIX_ROWS);
     matrix_init_quantum();
 }
@@ -166,6 +179,12 @@ void matrix_power_up(void) {
     for (uint8_t i=0; i < MATRIX_ROWS; i++) {
         matrix[i] = 0;
     }
+
+#ifdef DEBUG_MATRIX_SCAN_RATE
+    matrix_timer      = timer_read32();
+    matrix_scan_count = 0;
+#endif
+
 }
 
 // Reads and stores a row, returning
@@ -241,6 +260,20 @@ uint8_t matrix_scan(void) {
             }
         }
     }
+
+#ifdef DEBUG_MATRIX_SCAN_RATE
+    matrix_scan_count++;
+
+    uint32_t timer_now = timer_read32();
+    if (TIMER_DIFF_32(timer_now, matrix_timer) > 1000) {
+        print("matrix scan frequency: ");
+        pdec(matrix_scan_count);
+        print("\n");
+
+        matrix_timer      = timer_now;
+        matrix_scan_count = 0;
+    }
+#endif
 
     bool changed = false;
     for (uint8_t i = 0; i < MATRIX_ROWS_PER_SIDE; i++) {

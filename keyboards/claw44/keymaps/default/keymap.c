@@ -7,6 +7,7 @@
   #include "ssd1306.h"
 #endif
 
+extern keymap_config_t keymap_config;
 
 extern uint8_t is_master;
 
