@@ -35,3 +35,9 @@ QMK is developed and maintained by Jack Humbert of OLKB with contributions from 
 ## Official Website
 
 [qmk.fm](https://qmk.fm) is the official website of QMK, where you can find links to this page, the documentation, and the keyboards supported by QMK.
+
+## Running Massdrop Configurator
+
+1. compile your keymap.c "make massdrop/ctrl:ZeDesco
+2. Navigate into the MDLOADER folder
+3. Run the loader "mdloader_mac --first --downloader ../massdrop_ctrl_ZeDesco.bin --restart"
