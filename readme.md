@@ -40,4 +40,4 @@ QMK is developed and maintained by Jack Humbert of OLKB with contributions from 
 
 1. compile your keymap.c "make massdrop/ctrl:ZeDesco
 2. Navigate into the MDLOADER folder
-3. Run the loader "mdloader_mac --first --downloader ../massdrop_ctrl_ZeDesco.bin --restart"
+3. Run the loader "mdloader_mac --first --download ../massdrop_ctrl_ZeDesco.bin --restart"
