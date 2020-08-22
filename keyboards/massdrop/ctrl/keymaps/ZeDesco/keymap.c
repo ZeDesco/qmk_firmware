@@ -148,9 +148,5 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             return false;
         default:
             return true; //Process all other keycodes normally
-        case TO_RGB_TOG:
-            if (record->event.pressed) {
-                
-            }
     }
 }
