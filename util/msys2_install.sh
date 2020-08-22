@@ -4,11 +4,14 @@ dir=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
 download_dir=~/qmk_utils
 avrtools=avr8-gnu-toolchain
 armtools=gcc-arm-none-eabi
-installflip=false
 util_dir=$(dirname "$0")
 
 echo "Installing dependencies needed for the installation (quazip)"
+<<<<<<< HEAD
 pacman --needed -S base-devel mingw-w64-x86_64-toolchain msys/git msys/p7zip msys/python3 msys/unzip
+=======
+pacman --needed --noconfirm --disable-download-timeout -Sy base-devel mingw-w64-x86_64-toolchain mingw-w64-x86_64-clang git mingw-w64-x86_64-python3-pip unzip
+>>>>>>> upstream/master
 
 source "$dir/win_shared_install.sh"
 
@@ -16,6 +19,7 @@ function install_avr {
     rm -f -r "$avrtools"
     wget "http://ww1.microchip.com/downloads/en/DeviceDoc/avr8-gnu-toolchain-3.6.1.1752-win32.any.x86.zip"
     echo "Extracting AVR toolchain..."
+<<<<<<< HEAD
 	unzip -q avr8-gnu-toolchain-3.6.1.1752-win32.any.x86.zip
 	mv avr8-gnu-toolchain-win32_x86/ avr8-gnu-toolchain
     rm __MACOSX -R
@@ -28,19 +32,27 @@ function install_arm {
     unzip -d gcc-arm-none-eabi gcc-arm-none-eabi.zip
     rm gcc-arm-none-eabi.zip
 }
+=======
+    unzip -q -d . avr-gcc-8.3.0-x86-mingw.zip
+    mv avr-gcc-8.3.0-x86-mingw avr8-gnu-toolchain
+    rm avr8-gnu-toolchain/bin/make.exe
+    rm avr-gcc-8.3.0-x86-mingw.zip
 
-function extract_flip {
-    rm -f -r flip
-    7z -oflip x FlipInstaller.exe
+    pacman --needed --noconfirm --disable-download-timeout -S mingw-w64-x86_64-avrdude mingw-w64-x86_64-bootloadhid mingw-w64-x86_64-dfu-programmer mingw-w64-x86_64-teensy-loader-cli
+}
+
+function install_arm {
+    rm -f -r "$armtools"
+    wget -O gcc-arm-none-eabi-8-2019-q3-update-win32.zip "https://developer.arm.com/-/media/Files/downloads/gnu-rm/8-2019q3/RC1.1/gcc-arm-none-eabi-8-2019-q3-update-win32.zip"
+    echo "Extracting ARM toolchain..."
+    unzip -q -d gcc-arm-none-eabi gcc-arm-none-eabi-8-2019-q3-update-win32.zip
+    rm gcc-arm-none-eabi-8-2019-q3-update-win32.zip
+>>>>>>> upstream/master
+
+    pacman --needed --noconfirm --disable-download-timeout -S mingw-w64-x86_64-dfu-util
 }
 
 pushd "$download_dir"
-
-if [ -f "FlipInstaller.exe" ]; then
-    echo
-    echo "Extracting flip"
-    extract_flip
-fi
 
 if [ ! -d "$avrtools" ]; then
     while true; do
@@ -93,7 +105,7 @@ else
 fi
 popd
 
-pip3 install -r ${util_dir}/../requirements.txt
+pip3 install -r "${util_dir}/../requirements.txt"
 
 cp -f "$dir/activate_msys2.sh" "$download_dir/"
 

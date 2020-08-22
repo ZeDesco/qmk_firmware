@@ -10,7 +10,6 @@
 #include "timer.h"
 #include "led.h"
 #include "host.h"
-#include "rgblight_reconfig.h"
 
 #ifdef PROTOCOL_LUFA
 	#include "lufa.h"
@@ -27,6 +26,7 @@
   static bool is_suspended;
 #endif
 
+<<<<<<< HEAD
 
 #define wdt_intr_enable(value)   \
 __asm__ __volatile__ (  \
@@ -45,6 +45,8 @@ __asm__ __volatile__ (  \
 )
 
 
+=======
+>>>>>>> upstream/master
 /** \brief Suspend idle
  *
  * FIXME: needs doc
@@ -98,6 +100,7 @@ static uint8_t wdt_timeout = 0;
  * FIXME: needs doc
  */
 static void power_down(uint8_t wdto) {
+<<<<<<< HEAD
 #ifdef PROTOCOL_LUFA
   if (USB_DeviceState == DEVICE_STATE_Configured) return;
 #endif
@@ -135,6 +138,43 @@ static void power_down(uint8_t wdto) {
   }
 #endif
   suspend_power_down_kb();
+=======
+#    ifdef PROTOCOL_LUFA
+    if (USB_DeviceState == DEVICE_STATE_Configured) return;
+#    endif
+    wdt_timeout = wdto;
+
+    // Watchdog Interrupt Mode
+    wdt_intr_enable(wdto);
+
+#    ifdef BACKLIGHT_ENABLE
+    backlight_set(0);
+#    endif
+
+    // Turn off LED indicators
+    uint8_t leds_off = 0;
+#    if defined(BACKLIGHT_CAPS_LOCK) && defined(BACKLIGHT_ENABLE)
+    if (is_backlight_enabled()) {
+        // Don't try to turn off Caps Lock indicator as it is backlight and backlight is already off
+        leds_off |= (1 << USB_LED_CAPS_LOCK);
+    }
+#    endif
+    led_set(leds_off);
+
+#    ifdef AUDIO_ENABLE
+    // This sometimes disables the start-up noise, so it's been disabled
+    // stop_all_notes();
+#    endif /* AUDIO_ENABLE */
+#    if defined(RGBLIGHT_SLEEP) && defined(RGBLIGHT_ENABLE)
+    rgblight_timer_disable();
+    if (!is_suspended) {
+        is_suspended     = true;
+        rgblight_enabled = rgblight_config.enable;
+        rgblight_disable_noeeprom();
+    }
+#    endif
+    suspend_power_down_kb();
+>>>>>>> upstream/master
 
     // TODO: more power saving
     // See PicoPower application note
@@ -204,6 +244,7 @@ void suspend_wakeup_init(void) {
 #endif
 	led_set(host_keyboard_leds());
 #if defined(RGBLIGHT_SLEEP) && defined(RGBLIGHT_ENABLE)
+<<<<<<< HEAD
   is_suspended = false;
   if (rgblight_enabled) {
     #ifdef BOOTLOADER_TEENSY
@@ -214,6 +255,16 @@ void suspend_wakeup_init(void) {
 #ifdef RGBLIGHT_ANIMATIONS
   rgblight_timer_enable();
 #endif
+=======
+    is_suspended = false;
+    if (rgblight_enabled) {
+#    ifdef BOOTLOADER_TEENSY
+        wait_ms(10);
+#    endif
+        rgblight_enable_noeeprom();
+    }
+    rgblight_timer_enable();
+>>>>>>> upstream/master
 #endif
     suspend_wakeup_init_kb();
 }

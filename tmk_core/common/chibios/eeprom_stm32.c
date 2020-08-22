@@ -189,24 +189,40 @@ void eeprom_update_dword (uint32_t *Address, uint32_t Value)
     }
 }
 
+<<<<<<< HEAD
 void eeprom_read_block(void *buf, const void *addr, uint32_t len) {
     const uint8_t *p = (const uint8_t *)addr;
     uint8_t *dest = (uint8_t *)buf;
+=======
+void eeprom_read_block(void *buf, const void *addr, size_t len) {
+    const uint8_t *p    = (const uint8_t *)addr;
+    uint8_t *      dest = (uint8_t *)buf;
+>>>>>>> upstream/master
     while (len--) {
         *dest++ = eeprom_read_byte(p++);
     }
 }
 
+<<<<<<< HEAD
 void eeprom_write_block(const void *buf, void *addr, uint32_t len) {
     uint8_t *p = (uint8_t *)addr;
+=======
+void eeprom_write_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+>>>>>>> upstream/master
     const uint8_t *src = (const uint8_t *)buf;
     while (len--) {
         eeprom_write_byte(p++, *src++);
     }
 }
 
+<<<<<<< HEAD
 void eeprom_update_block(const void *buf, void *addr, uint32_t len) {
     uint8_t *p = (uint8_t *)addr;
+=======
+void eeprom_update_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+>>>>>>> upstream/master
     const uint8_t *src = (const uint8_t *)buf;
     while (len--) {
         eeprom_write_byte(p++, *src++);

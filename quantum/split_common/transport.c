@@ -34,15 +34,30 @@ typedef struct _I2C_slave_buffer_t {
 #endif
 #ifdef ENCODER_ENABLE
     uint8_t encoder_state[NUMBER_OF_ENCODERS];
+<<<<<<< HEAD
 #endif
+=======
+#    endif
+#    ifdef WPM_ENABLE
+    uint8_t current_wpm;
+#    endif
+>>>>>>> upstream/master
 } I2C_slave_buffer_t;
 
 static I2C_slave_buffer_t * const i2c_buffer = (I2C_slave_buffer_t *)i2c_slave_reg;
 
+<<<<<<< HEAD
 #  define I2C_BACKLIGHT_START offsetof(I2C_slave_buffer_t, backlight_level)
 #  define I2C_RGB_START offsetof(I2C_slave_buffer_t, rgblight_sync)
 #  define I2C_KEYMAP_START offsetof(I2C_slave_buffer_t, smatrix)
 #  define I2C_ENCODER_START offsetof(I2C_slave_buffer_t, encoder_state)
+=======
+#    define I2C_BACKLIGHT_START offsetof(I2C_slave_buffer_t, backlight_level)
+#    define I2C_RGB_START offsetof(I2C_slave_buffer_t, rgblight_sync)
+#    define I2C_KEYMAP_START offsetof(I2C_slave_buffer_t, smatrix)
+#    define I2C_ENCODER_START offsetof(I2C_slave_buffer_t, encoder_state)
+#    define I2C_WPM_START offsetof(I2C_slave_buffer_t, current_wpm)
+>>>>>>> upstream/master
 
 #  define TIMEOUT 100
 
@@ -80,7 +95,19 @@ bool transport_master(matrix_row_t matrix[]) {
   encoder_update_raw(i2c_buffer->encoder_state);
 #  endif
 
+<<<<<<< HEAD
   return true;
+=======
+#    ifdef WPM_ENABLE
+    uint8_t current_wpm = get_current_wpm();
+    if (current_wpm != i2c_buffer->current_wpm) {
+        if (i2c_writeReg(SLAVE_I2C_ADDRESS, I2C_WPM_START, (void *)&current_wpm, sizeof(current_wpm), TIMEOUT) >= 0) {
+            i2c_buffer->current_wpm = current_wpm;
+        }
+    }
+#    endif
+    return true;
+>>>>>>> upstream/master
 }
 
 void transport_slave(matrix_row_t matrix[]) {
@@ -88,6 +115,7 @@ void transport_slave(matrix_row_t matrix[]) {
   memcpy((void*)i2c_buffer->smatrix, (void *)matrix, sizeof(i2c_buffer->smatrix));
 
 // Read Backlight Info
+<<<<<<< HEAD
 #  ifdef BACKLIGHT_ENABLE
   backlight_set(i2c_buffer->backlight_level);
 #  endif
@@ -103,6 +131,27 @@ void transport_slave(matrix_row_t matrix[]) {
 #  ifdef ENCODER_ENABLE
   encoder_state_raw(i2c_buffer->encoder_state);
 #  endif
+=======
+#    ifdef BACKLIGHT_ENABLE
+    backlight_set(i2c_buffer->backlight_level);
+#    endif
+
+#    if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_SPLIT)
+    // Update the RGB with the new data
+    if (i2c_buffer->rgblight_sync.status.change_flags != 0) {
+        rgblight_update_sync(&i2c_buffer->rgblight_sync, false);
+        i2c_buffer->rgblight_sync.status.change_flags = 0;
+    }
+#    endif
+
+#    ifdef ENCODER_ENABLE
+    encoder_state_raw(i2c_buffer->encoder_state);
+#    endif
+
+#    ifdef WPM_ENABLE
+    set_current_wpm(i2c_buffer->current_wpm);
+#    endif
+>>>>>>> upstream/master
 }
 
 void transport_master_init(void) { i2c_init(); }
@@ -124,9 +173,18 @@ typedef struct _Serial_s2m_buffer_t {
 } Serial_s2m_buffer_t;
 
 typedef struct _Serial_m2s_buffer_t {
+<<<<<<< HEAD
 #  ifdef BACKLIGHT_ENABLE
   uint8_t           backlight_level;
 #  endif
+=======
+#    ifdef BACKLIGHT_ENABLE
+    uint8_t backlight_level;
+#    endif
+#    ifdef WPM_ENABLE
+    uint8_t current_wpm;
+#    endif
+>>>>>>> upstream/master
 } Serial_m2s_buffer_t;
 
 #if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_SPLIT)
@@ -231,7 +289,15 @@ bool transport_master(matrix_row_t matrix[]) {
   encoder_update_raw((uint8_t *)serial_s2m_buffer.encoder_state);
 #  endif
 
+<<<<<<< HEAD
   return true;
+=======
+#    ifdef WPM_ENABLE
+    // Write wpm to slave
+    serial_m2s_buffer.current_wpm = get_current_wpm();
+#    endif
+    return true;
+>>>>>>> upstream/master
 }
 
 void transport_slave(matrix_row_t matrix[]) {
@@ -248,6 +314,16 @@ void transport_slave(matrix_row_t matrix[]) {
   encoder_state_raw((uint8_t *)serial_s2m_buffer.encoder_state);
 #  endif
 
+<<<<<<< HEAD
+=======
+#    ifdef ENCODER_ENABLE
+    encoder_state_raw((uint8_t *)serial_s2m_buffer.encoder_state);
+#    endif
+
+#    ifdef WPM_ENABLE
+    set_current_wpm(serial_m2s_buffer.current_wpm);
+#    endif
+>>>>>>> upstream/master
 }
 
 #endif

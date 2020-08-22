@@ -173,15 +173,22 @@ void persistent_default_layer_set(uint16_t default_layer) {
 
 void matrix_init_user(void) {
 #ifdef BOOTLOADER_CATERINA
+<<<<<<< HEAD
    // This will disable the red LEDs on the ProMicros
    DDRD &= ~(1<<5);
    PORTD &= ~(1<<5);
    DDRB &= ~(1<<0);
    PORTB &= ~(1<<0);
+=======
+    // This will disable the red LEDs on the ProMicros
+    setPinInput(D5);
+    setPinInput(B0);
+>>>>>>> upstream/master
 #endif
 };
 
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+<<<<<<< HEAD
   switch (keycode) {
     case QWERTY:
       if (record->event.pressed) {
@@ -243,4 +250,20 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
       break; */
   }
   return true;
+=======
+    if (record->event.pressed) {
+        switch (keycode) {
+            case QWERTY:
+                set_single_persistent_default_layer(_QWERTY);
+                return false;
+            case COLEMAK:
+                set_single_persistent_default_layer(_COLEMAK);
+                return false;
+            case DVORAK:
+                set_single_persistent_default_layer(_DVORAK);
+                return false;
+        }
+    }
+    return true;
+>>>>>>> upstream/master
 }

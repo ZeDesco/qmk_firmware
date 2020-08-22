@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #pragma once
 
 #ifdef __AVR__
@@ -8,6 +9,9 @@
 #else
  #define PROGMEM
 #endif
+=======
+#include "progmem.h"
+>>>>>>> upstream/master
 
 // Helidox 8x6 font with QMK Firmware Logo
 // Online editor: http://teripom.x0.com/

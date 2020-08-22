@@ -2,4 +2,8 @@
 # milc FIXME(skullydazed): Included in the repo for now.
 argcomplete
 colorama
+<<<<<<< HEAD
 #halo
+=======
+hjson
+>>>>>>> upstream/master

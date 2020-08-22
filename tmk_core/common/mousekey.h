@@ -25,6 +25,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef MK_3_SPEED
 
 /* max value on report descriptor */
+<<<<<<< HEAD
 #ifndef MOUSEKEY_MOVE_MAX
   #define MOUSEKEY_MOVE_MAX       127
 #elif MOUSEKEY_MOVE_MAX > 127
@@ -61,6 +62,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #ifndef MOUSEKEY_WHEEL_TIME_TO_MAX
 #define MOUSEKEY_WHEEL_TIME_TO_MAX 40
 #endif
+=======
+#    ifndef MOUSEKEY_MOVE_MAX
+#        define MOUSEKEY_MOVE_MAX 127
+#    elif MOUSEKEY_MOVE_MAX > 127
+#        error MOUSEKEY_MOVE_MAX needs to be smaller than 127
+#    endif
+
+#    ifndef MOUSEKEY_WHEEL_MAX
+#        define MOUSEKEY_WHEEL_MAX 127
+#    elif MOUSEKEY_WHEEL_MAX > 127
+#        error MOUSEKEY_WHEEL_MAX needs to be smaller than 127
+#    endif
+
+#    ifndef MOUSEKEY_MOVE_DELTA
+#        define MOUSEKEY_MOVE_DELTA 5
+#    endif
+#    ifndef MOUSEKEY_WHEEL_DELTA
+#        define MOUSEKEY_WHEEL_DELTA 1
+#    endif
+#    ifndef MOUSEKEY_DELAY
+#        define MOUSEKEY_DELAY 300
+#    endif
+#    ifndef MOUSEKEY_INTERVAL
+#        define MOUSEKEY_INTERVAL 50
+#    endif
+#    ifndef MOUSEKEY_MAX_SPEED
+#        define MOUSEKEY_MAX_SPEED 10
+#    endif
+#    ifndef MOUSEKEY_TIME_TO_MAX
+#        define MOUSEKEY_TIME_TO_MAX 20
+#    endif
+#    ifndef MOUSEKEY_WHEEL_DELAY
+#        define MOUSEKEY_WHEEL_DELAY 300
+#    endif
+#    ifndef MOUSEKEY_WHEEL_INTERVAL
+#        define MOUSEKEY_WHEEL_INTERVAL 100
+#    endif
+#    ifndef MOUSEKEY_WHEEL_MAX_SPEED
+#        define MOUSEKEY_WHEEL_MAX_SPEED 8
+#    endif
+#    ifndef MOUSEKEY_WHEEL_TIME_TO_MAX
+#        define MOUSEKEY_WHEEL_TIME_TO_MAX 40
+#    endif
+>>>>>>> upstream/master
 
 #else /* #ifndef MK_3_SPEED */
 

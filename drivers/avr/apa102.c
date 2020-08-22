@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
 * APA102 lib V1.0a
 *
 * Controls APA102 RGB-LEDs
@@ -19,6 +20,28 @@
 * You should have received a copy of the GNU General Public License
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+=======
+ * APA102 lib V1.0a
+ *
+ * Controls APA102 RGB-LEDs
+ * Author: Mikkel (Duckle29 on GitHub)
+ *
+ * Dec 22th, 2017  v1.0a Initial Version
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+>>>>>>> upstream/master
 
 #include "apa102.h"
 #include <avr/interrupt.h>
@@ -31,9 +54,15 @@ void inline apa102_setleds(LED_TYPE *ledarray, uint16_t leds){
   apa102_setleds_pin(ledarray,leds, _BV(RGB_DI_PIN & 0xF), _BV(RGB_CLK_PIN & 0xF));
 }
 
+<<<<<<< HEAD
 void static inline apa102_setleds_pin(LED_TYPE *ledarray, uint16_t leds, uint8_t pinmask_DI, uint8_t pinmask_CLK){
   pinMode(RGB_DI_PIN, PinDirectionOutput);
   pinMode(RGB_CLK_PIN, PinDirectionOutput);
+=======
+void static inline apa102_setleds_pin(LED_TYPE *ledarray, uint16_t leds, uint8_t pinmask_DI, uint8_t pinmask_CLK) {
+    setPinOutput(RGB_DI_PIN);
+    setPinOutput(RGB_CLK_PIN);
+>>>>>>> upstream/master
 
   apa102_send_array((uint8_t*)ledarray,leds)
 }
@@ -92,10 +121,19 @@ void apa102_end_frame(uint16_t leds)
   }
 }
 
+<<<<<<< HEAD
 void apa102_send_byte(uint8_t byte){
   uint8_t i;
   for (i = 0; i < 8; i++){
     digitalWrite(RGB_DI_PIN, !!(byte & (1 << (7-i)));
     digitalWrite(RGB_CLK_PIN, PinLevelHigh);
   }
+=======
+void apa102_send_byte(uint8_t byte) {
+    uint8_t i;
+    for (i = 0; i < 8; i++) {
+        writePin(RGB_DI_PIN, !!(byte & (1 << (7 - i))));
+        writePinHigh(RGB_CLK_PIN);
+    }
+>>>>>>> upstream/master
 }

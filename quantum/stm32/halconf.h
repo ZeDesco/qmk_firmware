@@ -1,5 +1,5 @@
 /*
-    ChibiOS - Copyright (C) 2006..2016 Giovanni Di Sirio
+    ChibiOS - Copyright (C) 2006..2018 Giovanni Di Sirio
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.
@@ -28,7 +28,14 @@
 #ifndef HALCONF_H
 #define HALCONF_H
 
+<<<<<<< HEAD
 #include "mcuconf.h"
+=======
+#    define _CHIBIOS_HAL_CONF_
+#    define _CHIBIOS_HAL_CONF_VER_7_0_
+
+#    include "mcuconf.h"
+>>>>>>> upstream/master
 
 /**
  * @brief   Enables the PAL subsystem.
@@ -52,18 +59,30 @@
 #endif
 
 /**
- * @brief   Enables the DAC subsystem.
+ * @brief   Enables the cryptographic subsystem.
  */
+<<<<<<< HEAD
 #if !defined(HAL_USE_DAC) || defined(__DOXYGEN__)
 #define HAL_USE_DAC                 TRUE
 #endif
+=======
+#    if !defined(HAL_USE_CRY) || defined(__DOXYGEN__)
+#        define HAL_USE_CRY FALSE
+#    endif
+>>>>>>> upstream/master
 
 /**
- * @brief   Enables the EXT subsystem.
+ * @brief   Enables the DAC subsystem.
  */
+<<<<<<< HEAD
 #if !defined(HAL_USE_EXT) || defined(__DOXYGEN__)
 #define HAL_USE_EXT                 FALSE
 #endif
+=======
+#    if !defined(HAL_USE_DAC) || defined(__DOXYGEN__)
+#        define HAL_USE_DAC TRUE
+#    endif
+>>>>>>> upstream/master
 
 /**
  * @brief   Enables the GPT subsystem.
@@ -115,6 +134,7 @@
 #endif
 
 /**
+<<<<<<< HEAD
  * @brief   Enables the QSPI subsystem.
  */
 #if !defined(HAL_USE_QSPI) || defined(__DOXYGEN__)
@@ -122,6 +142,8 @@
 #endif
 
 /**
+=======
+>>>>>>> upstream/master
  * @brief   Enables the RTC subsystem.
  */
 #if !defined(HAL_USE_RTC) || defined(__DOXYGEN__)
@@ -150,11 +172,31 @@
 #endif
 
 /**
+ * @brief   Enables the SIO subsystem.
+ */
+#    if !defined(HAL_USE_SIO) || defined(__DOXYGEN__)
+#        define HAL_USE_SIO FALSE
+#    endif
+
+/**
  * @brief   Enables the SPI subsystem.
  */
+<<<<<<< HEAD
 #if !defined(HAL_USE_SPI) || defined(__DOXYGEN__)
 #define HAL_USE_SPI                 FALSE
 #endif
+=======
+#    if !defined(HAL_USE_SPI) || defined(__DOXYGEN__)
+#        define HAL_USE_SPI TRUE
+#    endif
+
+/**
+ * @brief   Enables the TRNG subsystem.
+ */
+#    if !defined(HAL_USE_TRNG) || defined(__DOXYGEN__)
+#        define HAL_USE_TRNG FALSE
+#    endif
+>>>>>>> upstream/master
 
 /**
  * @brief   Enables the UART subsystem.
@@ -176,6 +218,33 @@
 #if !defined(HAL_USE_WDG) || defined(__DOXYGEN__)
 #define HAL_USE_WDG                 FALSE
 #endif
+
+/**
+ * @brief   Enables the WSPI subsystem.
+ */
+#    if !defined(HAL_USE_WSPI) || defined(__DOXYGEN__)
+#        define HAL_USE_WSPI FALSE
+#    endif
+
+/*===========================================================================*/
+/* PAL driver related settings.                                              */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables synchronous APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(PAL_USE_CALLBACKS) || defined(__DOXYGEN__)
+#        define PAL_USE_CALLBACKS TRUE
+#    endif
+
+/**
+ * @brief   Enables synchronous APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(PAL_USE_WAIT) || defined(__DOXYGEN__)
+#        define PAL_USE_WAIT TRUE
+#    endif
 
 /*===========================================================================*/
 /* ADC driver related settings.                                              */
@@ -208,6 +277,55 @@
 #define CAN_USE_SLEEP_MODE          TRUE
 #endif
 
+/**
+ * @brief   Enforces the driver to use direct callbacks rather than OSAL events.
+ */
+#    if !defined(CAN_ENFORCE_USE_CALLBACKS) || defined(__DOXYGEN__)
+#        define CAN_ENFORCE_USE_CALLBACKS FALSE
+#    endif
+
+/*===========================================================================*/
+/* CRY driver related settings.                                              */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables the SW fall-back of the cryptographic driver.
+ * @details When enabled, this option, activates a fall-back software
+ *          implementation for algorithms not supported by the underlying
+ *          hardware.
+ * @note    Fall-back implementations may not be present for all algorithms.
+ */
+#    if !defined(HAL_CRY_USE_FALLBACK) || defined(__DOXYGEN__)
+#        define HAL_CRY_USE_FALLBACK FALSE
+#    endif
+
+/**
+ * @brief   Makes the driver forcibly use the fall-back implementations.
+ */
+#    if !defined(HAL_CRY_ENFORCE_FALLBACK) || defined(__DOXYGEN__)
+#        define HAL_CRY_ENFORCE_FALLBACK FALSE
+#    endif
+
+/*===========================================================================*/
+/* DAC driver related settings.                                              */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables synchronous APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(DAC_USE_WAIT) || defined(__DOXYGEN__)
+#        define DAC_USE_WAIT TRUE
+#    endif
+
+/**
+ * @brief   Enables the @p dacAcquireBus() and @p dacReleaseBus() APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(DAC_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
+#        define DAC_USE_MUTUAL_EXCLUSION TRUE
+#    endif
+
 /*===========================================================================*/
 /* I2C driver related settings.                                              */
 /*===========================================================================*/
@@ -224,7 +342,7 @@
 /*===========================================================================*/
 
 /**
- * @brief   Enables an event sources for incoming packets.
+ * @brief   Enables the zero-copy API.
  */
 #if !defined(MAC_USE_ZERO_COPY) || defined(__DOXYGEN__)
 #define MAC_USE_ZERO_COPY           FALSE
@@ -283,6 +401,20 @@
 #if !defined(SDC_NICE_WAITING) || defined(__DOXYGEN__)
 #define SDC_NICE_WAITING            TRUE
 #endif
+
+/**
+ * @brief   OCR initialization constant for V20 cards.
+ */
+#    if !defined(SDC_INIT_OCR_V20) || defined(__DOXYGEN__)
+#        define SDC_INIT_OCR_V20 0x50FF8000U
+#    endif
+
+/**
+ * @brief   OCR initialization constant for non-V20 cards.
+ */
+#    if !defined(SDC_INIT_OCR) || defined(__DOXYGEN__)
+#        define SDC_INIT_OCR 0x80100000U
+#    endif
 
 /*===========================================================================*/
 /* SERIAL driver related settings.                                           */
@@ -344,12 +476,28 @@
 #endif
 
 /**
+ * @brief   Enables circular transfers APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(SPI_USE_CIRCULAR) || defined(__DOXYGEN__)
+#        define SPI_USE_CIRCULAR FALSE
+#    endif
+
+/**
  * @brief   Enables the @p spiAcquireBus() and @p spiReleaseBus() APIs.
  * @note    Disabling this option saves both code and data space.
  */
 #if !defined(SPI_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
 #define SPI_USE_MUTUAL_EXCLUSION    TRUE
 #endif
+
+/**
+ * @brief   Handling method for SPI CS line.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(SPI_SELECT_MODE) || defined(__DOXYGEN__)
+#        define SPI_SELECT_MODE SPI_SELECT_MODE_PAD
+#    endif
 
 /*===========================================================================*/
 /* UART driver related settings.                                             */
@@ -382,6 +530,26 @@
 #if !defined(USB_USE_WAIT) || defined(__DOXYGEN__)
 #define USB_USE_WAIT                TRUE
 #endif
+
+/*===========================================================================*/
+/* WSPI driver related settings.                                             */
+/*===========================================================================*/
+
+/**
+ * @brief   Enables synchronous APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(WSPI_USE_WAIT) || defined(__DOXYGEN__)
+#        define WSPI_USE_WAIT TRUE
+#    endif
+
+/**
+ * @brief   Enables the @p wspiAcquireBus() and @p wspiReleaseBus() APIs.
+ * @note    Disabling this option saves both code and data space.
+ */
+#    if !defined(WSPI_USE_MUTUAL_EXCLUSION) || defined(__DOXYGEN__)
+#        define WSPI_USE_MUTUAL_EXCLUSION TRUE
+#    endif
 
 #endif /* HALCONF_H */
 

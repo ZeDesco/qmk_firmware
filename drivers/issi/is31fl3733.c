@@ -16,6 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 #ifdef __AVR__
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -28,6 +29,11 @@
 #include <string.h>
 #include "i2c_master.h"
 #include "progmem.h"
+=======
+#include "is31fl3733.h"
+#include "i2c_master.h"
+#include "wait.h"
+>>>>>>> upstream/master
 
 // This is a 7-bit address, that gets left-shifted and bit 0
 // set to 0 for write, 1 for read (as per I2C protocol)
@@ -165,11 +171,15 @@ void IS31FL3733_init( uint8_t addr, uint8_t sync)
     IS31FL3733_write_register( addr, ISSI_REG_CONFIGURATION, (sync << 6) | 0x01 );
 
     // Wait 10ms to ensure the device has woken up.
+<<<<<<< HEAD
     #ifdef __AVR__
     _delay_ms( 10 );
     #else
     wait_ms(10);
     #endif
+=======
+    wait_ms(10);
+>>>>>>> upstream/master
 }
 
 void IS31FL3733_set_color( int index, uint8_t red, uint8_t green, uint8_t blue )
@@ -231,7 +241,15 @@ void IS31FL3733_update_pwm_buffers( uint8_t addr, uint8_t index )
         IS31FL3733_write_register( addr, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5 );
         IS31FL3733_write_register( addr, ISSI_COMMANDREGISTER, ISSI_PAGE_PWM );
 
+<<<<<<< HEAD
         IS31FL3733_write_pwm_buffer( addr, g_pwm_buffer[index] );
+=======
+        // If any of the transactions fail we risk writing dirty PG0,
+        // refresh page 0 just in case.
+        if (!IS31FL3733_write_pwm_buffer(addr, g_pwm_buffer[index])) {
+            g_led_control_registers_update_required[index] = true;
+        }
+>>>>>>> upstream/master
     }
     g_pwm_buffer_update_required[index] = false;
 }

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 // generated from users/manna-harbour_miryoku/miryoku.org
 
@@ -15,3 +16,6 @@ K20,   KC_NO, KC_NO, K32,   K33,   K34,   K35,   K36,   K37,   KC_NO, KC_NO, K29
 )
 
 #include "manna-harbour_miryoku.c"
+=======
+// generated from users/manna-harbour_miryoku/miryoku.org  -*- buffer-read-only: t -*-
+>>>>>>> upstream/master

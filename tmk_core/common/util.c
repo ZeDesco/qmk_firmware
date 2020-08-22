@@ -18,8 +18,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "util.h"
 
 // bit population - return number of on-bit
+<<<<<<< HEAD
 uint8_t bitpop(uint8_t bits)
 {
+=======
+__attribute__((noinline)) uint8_t bitpop(uint8_t bits) {
+>>>>>>> upstream/master
     uint8_t c;
     for (c = 0; bits; c++)
         bits &= bits - 1;
@@ -48,8 +52,12 @@ uint8_t bitpop32(uint32_t bits)
 
 // most significant on-bit - return highest location of on-bit
 // NOTE: return 0 when bit0 is on or all bits are off
+<<<<<<< HEAD
 uint8_t biton(uint8_t bits)
 {
+=======
+__attribute__((noinline)) uint8_t biton(uint8_t bits) {
+>>>>>>> upstream/master
     uint8_t n = 0;
     if (bits >> 4) { bits >>= 4; n += 4;}
     if (bits >> 2) { bits >>= 2; n += 2;}
@@ -78,6 +86,7 @@ uint8_t biton32(uint32_t bits)
     return n;
 }
 
+<<<<<<< HEAD
 
 
 uint8_t bitrev(uint8_t bits)
@@ -85,6 +94,12 @@ uint8_t bitrev(uint8_t bits)
     bits = (bits & 0x0f)<<4 | (bits & 0xf0)>>4;
     bits = (bits & 0b00110011)<<2 | (bits & 0b11001100)>>2;
     bits = (bits & 0b01010101)<<1 | (bits & 0b10101010)>>1;
+=======
+__attribute__((noinline)) uint8_t bitrev(uint8_t bits) {
+    bits = (bits & 0x0f) << 4 | (bits & 0xf0) >> 4;
+    bits = (bits & 0b00110011) << 2 | (bits & 0b11001100) >> 2;
+    bits = (bits & 0b01010101) << 1 | (bits & 0b10101010) >> 1;
+>>>>>>> upstream/master
     return bits;
 }
 

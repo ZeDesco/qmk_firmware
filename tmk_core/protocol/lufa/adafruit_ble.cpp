@@ -1,15 +1,19 @@
 #include "adafruit_ble.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <alloca.h>
-#include <util/delay.h>
-#include <util/atomic.h>
 #include "debug.h"
-#include "pincontrol.h"
 #include "timer.h"
 #include "action_util.h"
 #include "ringbuffer.hpp"
 #include <string.h>
+<<<<<<< HEAD
+=======
+#include "spi_master.h"
+#include "wait.h"
+#include "analog.h"
+>>>>>>> upstream/master
 
 // These are the pin assignments for the 32u4 boards.
 // You may define them to something else in your config.h
@@ -26,6 +30,14 @@
 #define AdafruitBleIRQPin   E6
 #endif
 
+<<<<<<< HEAD
+=======
+#ifndef AdafruitBleSpiClockSpeed
+#    define AdafruitBleSpiClockSpeed 4000000UL  // SCK frequency
+#endif
+
+#define SCK_DIVISOR (F_CPU / AdafruitBleSpiClockSpeed)
+>>>>>>> upstream/master
 
 #define SAMPLE_BATTERY
 #define ConnectionUpdateInterval 1000 /* milliseconds */
@@ -124,6 +136,7 @@ enum ble_system_event_bits {
   BleSystemMidiRx = 10,
 };
 
+<<<<<<< HEAD
 // The SDEP.md file says 2MHz but the web page and the sample driver
 // both use 4MHz
 #define SpiBusSpeed 4000000
@@ -131,6 +144,11 @@ enum ble_system_event_bits {
 #define SdepTimeout 150 /* milliseconds */
 #define SdepShortTimeout 10 /* milliseconds */
 #define SdepBackOff 25 /* microseconds */
+=======
+#define SdepTimeout 150             /* milliseconds */
+#define SdepShortTimeout 10         /* milliseconds */
+#define SdepBackOff 25              /* microseconds */
+>>>>>>> upstream/master
 #define BatteryUpdateInterval 10000 /* milliseconds */
 
 static bool at_command(const char *cmd, char *resp, uint16_t resplen,
@@ -138,6 +156,7 @@ static bool at_command(const char *cmd, char *resp, uint16_t resplen,
 static bool at_command_P(const char *cmd, char *resp, uint16_t resplen,
                          bool verbose = false);
 
+<<<<<<< HEAD
 struct SPI_Settings {
   uint8_t spcr, spsr;
 };
@@ -229,10 +248,31 @@ static bool sdep_send_pkt(const struct sdep_msg *msg, uint16_t timeout) {
   uint16_t timerStart = timer_read();
   bool success = false;
   bool ready = false;
+=======
+// Send a single SDEP packet
+static bool sdep_send_pkt(const struct sdep_msg *msg, uint16_t timeout) {
+    spi_start(AdafruitBleCSPin, false, 0, SCK_DIVISOR);
+    uint16_t timerStart = timer_read();
+    bool     success    = false;
+    bool     ready      = false;
+
+    do {
+        ready = spi_write(msg->type) != SdepSlaveNotReady;
+        if (ready) {
+            break;
+        }
+
+        // Release it and let it initialize
+        spi_stop();
+        wait_us(SdepBackOff);
+        spi_start(AdafruitBleCSPin, false, 0, SCK_DIVISOR);
+    } while (timer_elapsed(timerStart) < timeout);
+>>>>>>> upstream/master
 
   do {
     ready = SPI_TransferByte(msg->type) != SdepSlaveNotReady;
     if (ready) {
+<<<<<<< HEAD
       break;
     }
 
@@ -248,6 +288,14 @@ static bool sdep_send_pkt(const struct sdep_msg *msg, uint16_t timeout) {
                    sizeof(*msg) - (1 + sizeof(msg->payload)) + msg->len);
     success = true;
   }
+=======
+        // Slave is ready; send the rest of the packet
+        spi_transmit(&msg->cmd_low, sizeof(*msg) - (1 + sizeof(msg->payload)) + msg->len);
+        success = true;
+    }
+
+    spi_stop();
+>>>>>>> upstream/master
 
   digitalWrite(AdafruitBleCSPin, PinLevelHigh);
 
@@ -270,13 +318,28 @@ static inline void sdep_build_pkt(struct sdep_msg *msg, uint16_t command,
 
 // Read a single SDEP packet
 static bool sdep_recv_pkt(struct sdep_msg *msg, uint16_t timeout) {
+<<<<<<< HEAD
   bool success = false;
   uint16_t timerStart = timer_read();
   bool ready = false;
+=======
+    bool     success    = false;
+    uint16_t timerStart = timer_read();
+    bool     ready      = false;
+
+    do {
+        ready = readPin(AdafruitBleIRQPin);
+        if (ready) {
+            break;
+        }
+        wait_us(1);
+    } while (timer_elapsed(timerStart) < timeout);
+>>>>>>> upstream/master
 
   do {
     ready = digitalRead(AdafruitBleIRQPin);
     if (ready) {
+<<<<<<< HEAD
       break;
     }
     _delay_us(1);
@@ -312,6 +375,35 @@ static bool sdep_recv_pkt(struct sdep_msg *msg, uint16_t timeout) {
     digitalWrite(AdafruitBleCSPin, PinLevelHigh);
   }
   return success;
+=======
+        spi_start(AdafruitBleCSPin, false, 0, SCK_DIVISOR);
+
+        do {
+            // Read the command type, waiting for the data to be ready
+            msg->type = spi_read();
+            if (msg->type == SdepSlaveNotReady || msg->type == SdepSlaveOverflow) {
+                // Release it and let it initialize
+                spi_stop();
+                wait_us(SdepBackOff);
+                spi_start(AdafruitBleCSPin, false, 0, SCK_DIVISOR);
+                continue;
+            }
+
+            // Read the rest of the header
+            spi_receive(&msg->cmd_low, sizeof(*msg) - (1 + sizeof(msg->payload)));
+
+            // and get the payload if there is any
+            if (msg->len <= SdepMaxPayload) {
+                spi_receive(msg->payload, msg->len);
+            }
+            success = true;
+            break;
+        } while (timer_elapsed(timerStart) < timeout);
+
+        spi_stop();
+    }
+    return success;
+>>>>>>> upstream/master
 }
 
 static void resp_buf_read_one(bool greedy) {
@@ -320,8 +412,13 @@ static void resp_buf_read_one(bool greedy) {
     return;
   }
 
+<<<<<<< HEAD
   if (digitalRead(AdafruitBleIRQPin)) {
     struct sdep_msg msg;
+=======
+    if (readPin(AdafruitBleIRQPin)) {
+        struct sdep_msg msg;
+>>>>>>> upstream/master
 
 again:
     if (sdep_recv_pkt(&msg, SdepTimeout)) {
@@ -331,10 +428,17 @@ again:
         dprintf("recv latency %dms\n", TIMER_DIFF_16(timer_read(), last_send));
       }
 
+<<<<<<< HEAD
       if (greedy && resp_buf.peek(last_send) && digitalRead(AdafruitBleIRQPin)) {
         goto again;
       }
     }
+=======
+            if (greedy && resp_buf.peek(last_send) && readPin(AdafruitBleIRQPin)) {
+                goto again;
+            }
+        }
+>>>>>>> upstream/master
 
   } else if (timer_elapsed(last_send) > SdepTimeout * 2) {
     dprintf("waiting_for_result: timeout, resp_buf size %d\n",
@@ -346,6 +450,7 @@ again:
 }
 
 static void send_buf_send_one(uint16_t timeout = SdepTimeout) {
+<<<<<<< HEAD
   struct queue_item item;
 
   // Don't send anything more until we get an ACK
@@ -365,6 +470,27 @@ static void send_buf_send_one(uint16_t timeout = SdepTimeout) {
     _delay_ms(SdepTimeout);
     resp_buf_read_one(true);
   }
+=======
+    struct queue_item item;
+
+    // Don't send anything more until we get an ACK
+    if (!resp_buf.empty()) {
+        return;
+    }
+
+    if (!send_buf.peek(item)) {
+        return;
+    }
+    if (process_queue_item(&item, timeout)) {
+        // commit that peek
+        send_buf.get(item);
+        dprintf("send_buf_send_one: have %d remaining\n", (int)send_buf.size());
+    } else {
+        dprint("failed to send, will retry\n");
+        wait_ms(SdepTimeout);
+        resp_buf_read_one(true);
+    }
+>>>>>>> upstream/master
 }
 
 static void resp_buf_wait(const char *cmd) {
@@ -383,6 +509,7 @@ static bool ble_init(void) {
   state.configured = false;
   state.is_connected = false;
 
+<<<<<<< HEAD
   pinMode(AdafruitBleIRQPin, PinDirectionInput);
   pinMode(AdafruitBleCSPin, PinDirectionOutput);
   digitalWrite(AdafruitBleCSPin, PinLevelHigh);
@@ -397,6 +524,20 @@ static bool ble_init(void) {
   digitalWrite(AdafruitBleResetPin, PinLevelHigh);
 
   _delay_ms(1000); // Give it a second to initialize
+=======
+    setPinInput(AdafruitBleIRQPin);
+
+    spi_init();
+
+    // Perform a hardware reset
+    setPinOutput(AdafruitBleResetPin);
+    writePinHigh(AdafruitBleResetPin);
+    writePinLow(AdafruitBleResetPin);
+    wait_ms(10);
+    writePinHigh(AdafruitBleResetPin);
+
+    wait_ms(1000);  // Give it a second to initialize
+>>>>>>> upstream/master
 
   state.initialized = true;
   return state.initialized;
@@ -600,6 +741,7 @@ static void set_connected(bool connected) {
 }
 
 void adafruit_ble_task(void) {
+<<<<<<< HEAD
   char resbuf[48];
 
   if (!state.configured && !adafruit_ble_enable_keyboard()) {
@@ -641,6 +783,27 @@ void adafruit_ble_task(void) {
       // before relying solely on events
     } else {
       shouldPoll = false;
+=======
+    char resbuf[48];
+
+    if (!state.configured && !adafruit_ble_enable_keyboard()) {
+        return;
+    }
+    resp_buf_read_one(true);
+    send_buf_send_one(SdepShortTimeout);
+
+    if (resp_buf.empty() && (state.event_flags & UsingEvents) && readPin(AdafruitBleIRQPin)) {
+        // Must be an event update
+        if (at_command_P(PSTR("AT+EVENTSTATUS"), resbuf, sizeof(resbuf))) {
+            uint32_t mask = strtoul(resbuf, NULL, 16);
+
+            if (mask & BleSystemConnected) {
+                set_connected(true);
+            } else if (mask & BleSystemDisconnected) {
+                set_connected(false);
+            }
+        }
+>>>>>>> upstream/master
     }
 
     static const char kGetConn[] PROGMEM = "AT+GAPGETCONN";

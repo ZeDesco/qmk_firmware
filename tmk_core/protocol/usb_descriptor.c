@@ -39,6 +39,7 @@
 #include "util.h"
 #include "report.h"
 #include "usb_descriptor.h"
+#include "usb_descriptor_common.h"
 
 #ifndef USB_MAX_POWER_CONSUMPTION
 #define USB_MAX_POWER_CONSUMPTION 500
@@ -164,10 +165,18 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM SharedReport[] = {
     HID_RI_USAGE(8, 0x80), /* System Control */
     HID_RI_COLLECTION(8, 0x01), /* Application */
         HID_RI_REPORT_ID(8, REPORT_ID_SYSTEM),
+<<<<<<< HEAD
         HID_RI_LOGICAL_MINIMUM(16, 0x0001),
         HID_RI_LOGICAL_MAXIMUM(16, 0x0003),
         HID_RI_USAGE_MINIMUM(16, 0x0081), /* System Power Down */
         HID_RI_USAGE_MAXIMUM(16, 0x0083), /* System Wake Up */
+=======
+        HID_RI_USAGE_MINIMUM(8, 0x01),    // Pointer
+        HID_RI_USAGE_MAXIMUM(16, 0x00B7), // System Display LCD Autoscale
+        HID_RI_LOGICAL_MINIMUM(8, 0x01),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x00B7),
+        HID_RI_REPORT_COUNT(8, 1),
+>>>>>>> upstream/master
         HID_RI_REPORT_SIZE(8, 16),
         HID_RI_REPORT_COUNT(8, 1),
         HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
@@ -177,10 +186,18 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM SharedReport[] = {
     HID_RI_USAGE(8, 0x01), /* Consumer Control */
     HID_RI_COLLECTION(8, 0x01), /* Application */
         HID_RI_REPORT_ID(8, REPORT_ID_CONSUMER),
+<<<<<<< HEAD
         HID_RI_LOGICAL_MINIMUM(16, 0x0001),
         HID_RI_LOGICAL_MAXIMUM(16, 0x029C),
         HID_RI_USAGE_MINIMUM(16, 0x0001), /* +10 */
         HID_RI_USAGE_MAXIMUM(16, 0x029C), /* AC Distribute Vertically */
+=======
+        HID_RI_USAGE_MINIMUM(8, 0x01),    // Consumer Control
+        HID_RI_USAGE_MAXIMUM(16, 0x02A0), // AC Desktop Show All Applications
+        HID_RI_LOGICAL_MINIMUM(8, 0x01),
+        HID_RI_LOGICAL_MAXIMUM(16, 0x02A0),
+        HID_RI_REPORT_COUNT(8, 1),
+>>>>>>> upstream/master
         HID_RI_REPORT_SIZE(8, 16),
         HID_RI_REPORT_COUNT(8, 1),
         HID_RI_INPUT(8, HID_IOF_DATA | HID_IOF_ARRAY | HID_IOF_ABSOLUTE),
@@ -226,12 +243,21 @@ const USB_Descriptor_HIDReport_Datatype_t PROGMEM SharedReport[] = {
 #endif
 
 #ifdef RAW_ENABLE
+<<<<<<< HEAD
 const USB_Descriptor_HIDReport_Datatype_t PROGMEM RawReport[] =
 {
     HID_RI_USAGE_PAGE(16, 0xFF60), /* Vendor Page 0xFF60 */
     HID_RI_USAGE(8, 0x61), /* Vendor Usage 0x61 */
     HID_RI_COLLECTION(8, 0x01), /* Application */
         HID_RI_USAGE(8, 0x62), /* Vendor Usage 0x62 */
+=======
+const USB_Descriptor_HIDReport_Datatype_t PROGMEM RawReport[] = {
+    HID_RI_USAGE_PAGE(16, RAW_USAGE_PAGE), // Vendor Defined
+    HID_RI_USAGE(8, RAW_USAGE_ID),         // Vendor Defined
+    HID_RI_COLLECTION(8, 0x01),    // Application
+        // Data to host
+        HID_RI_USAGE(8, 0x62),     // Vendor Defined
+>>>>>>> upstream/master
         HID_RI_LOGICAL_MINIMUM(8, 0x00),
         HID_RI_LOGICAL_MAXIMUM(16, 0x00FF),
         HID_RI_REPORT_COUNT(8, RAW_EPSIZE),

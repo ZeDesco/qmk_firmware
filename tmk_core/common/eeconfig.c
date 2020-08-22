@@ -8,7 +8,14 @@
 #include "eeprom_stm32.h"
 #endif
 
+<<<<<<< HEAD
 extern uint32_t default_layer_state;
+=======
+#if defined(EEPROM_DRIVER)
+#    include "eeprom_driver.h"
+#endif
+
+>>>>>>> upstream/master
 /** \brief eeconfig enable
  *
  * FIXME: needs doc
@@ -35,6 +42,7 @@ void eeconfig_init_quantum(void) {
 #ifdef STM32_EEPROM_ENABLE
     EEPROM_Erase();
 #endif
+<<<<<<< HEAD
   eeprom_update_word(EECONFIG_MAGIC,          EECONFIG_MAGIC_NUMBER);
   eeprom_update_byte(EECONFIG_DEBUG,          0);
   eeprom_update_byte(EECONFIG_DEFAULT_LAYER,  0);
@@ -51,6 +59,38 @@ void eeconfig_init_quantum(void) {
   eeprom_update_byte(EECONFIG_RGB_MATRIX_SPEED, 0);
 
   eeconfig_init_kb();
+=======
+#if defined(EEPROM_DRIVER)
+    eeprom_driver_erase();
+#endif
+    eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_NUMBER);
+    eeprom_update_byte(EECONFIG_DEBUG, 0);
+    eeprom_update_byte(EECONFIG_DEFAULT_LAYER, 0);
+    default_layer_state = 0;
+    eeprom_update_byte(EECONFIG_KEYMAP_LOWER_BYTE, 0);
+    eeprom_update_byte(EECONFIG_KEYMAP_UPPER_BYTE, 0);
+    eeprom_update_byte(EECONFIG_MOUSEKEY_ACCEL, 0);
+    eeprom_update_byte(EECONFIG_BACKLIGHT, 0);
+    eeprom_update_byte(EECONFIG_AUDIO, 0xFF);  // On by default
+    eeprom_update_dword(EECONFIG_RGBLIGHT, 0);
+    eeprom_update_byte(EECONFIG_STENOMODE, 0);
+    eeprom_update_dword(EECONFIG_HAPTIC, 0);
+    eeprom_update_byte(EECONFIG_VELOCIKEY, 0);
+    eeprom_update_dword(EECONFIG_RGB_MATRIX, 0);
+    eeprom_update_byte(EECONFIG_RGB_MATRIX_SPEED, 0);
+
+    // TODO: Remove once ARM has a way to configure EECONFIG_HANDEDNESS
+    //        within the emulated eeprom via dfu-util or another tool
+#if defined INIT_EE_HANDS_LEFT
+#    pragma message "Faking EE_HANDS for left hand"
+    eeprom_update_byte(EECONFIG_HANDEDNESS, 1);
+#elif defined INIT_EE_HANDS_RIGHT
+#    pragma message "Faking EE_HANDS for right hand"
+    eeprom_update_byte(EECONFIG_HANDEDNESS, 0);
+#endif
+
+    eeconfig_init_kb();
+>>>>>>> upstream/master
 }
 
 /** \brief eeconfig initialization
@@ -79,6 +119,9 @@ void eeconfig_disable(void)
 {
 #ifdef STM32_EEPROM_ENABLE
     EEPROM_Erase();
+#endif
+#if defined(EEPROM_DRIVER)
+    eeprom_driver_erase();
 #endif
     eeprom_update_word(EECONFIG_MAGIC, EECONFIG_MAGIC_NUMBER_OFF);
 }

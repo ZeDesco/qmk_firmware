@@ -21,7 +21,12 @@
     #include <avr/interrupt.h>
 #endif
 #if defined(PROTOCOL_CHIBIOS)
+<<<<<<< HEAD
     #include "hal.h"
+=======
+#    include "hal.h"
+#    include "chibios_config.h"
+>>>>>>> upstream/master
 #endif
 
 #include "wait.h"
@@ -87,6 +92,10 @@ extern layer_state_t default_layer_state;
     #include "process_music.h"
 #endif
 
+#ifdef BACKLIGHT_ENABLE
+#    include "process_backlight.h"
+#endif
+
 #ifdef LEADER_ENABLE
     #include "process_leader.h"
 #endif
@@ -130,7 +139,23 @@ extern layer_state_t default_layer_state;
 #endif
 
 #ifdef SPACE_CADET_ENABLE
+<<<<<<< HEAD
     #include "process_space_cadet.h"
+=======
+#    include "process_space_cadet.h"
+#endif
+
+#ifdef MAGIC_KEYCODE_ENABLE
+#    include "process_magic.h"
+#endif
+
+#ifdef GRAVE_ESC_ENABLE
+#    include "process_grave_esc.h"
+#endif
+
+#if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
+#    include "process_rgb.h"
+>>>>>>> upstream/master
 #endif
 
 #ifdef HD44780_ENABLE
@@ -145,22 +170,48 @@ extern layer_state_t default_layer_state;
     #include "oled_driver.h"
 #endif
 
+#ifdef DYNAMIC_KEYMAP_ENABLE
+#    include "dynamic_keymap.h"
+#endif
+
+#ifdef VIA_ENABLE
+#    include "via.h"
+#endif
+
+#ifdef WPM_ENABLE
+#    include "wpm.h"
+#endif
+
 // Function substitutions to ease GPIO manipulation
 #if defined(__AVR__)
     typedef uint8_t pin_t;
 
+<<<<<<< HEAD
     #define PIN_ADDRESS(p, offset)  (_SFR_IO8(ADDRESS_BASE + ((p) >> PORT_SHIFTER) + (offset)))
     #define setPinInput(pin)        (PIN_ADDRESS(pin, 1) &= ~_BV((pin) & 0xF))
     #define setPinInputHigh(pin)    (PIN_ADDRESS(pin, 1) &= ~_BV((pin) & 0xF), \
                                      PIN_ADDRESS(pin, 2) |=  _BV((pin) & 0xF))
     #define setPinInputLow(pin)     _Static_assert(0, "AVR processors cannot implement an input as pull low")
     #define setPinOutput(pin)       (PIN_ADDRESS(pin, 1) |=  _BV((pin) & 0xF))
+=======
+#    define setPinInput(pin) (DDRx_ADDRESS(pin) &= ~_BV((pin)&0xF), PORTx_ADDRESS(pin) &= ~_BV((pin)&0xF))
+#    define setPinInputHigh(pin) (DDRx_ADDRESS(pin) &= ~_BV((pin)&0xF), PORTx_ADDRESS(pin) |= _BV((pin)&0xF))
+#    define setPinInputLow(pin) _Static_assert(0, "AVR processors cannot implement an input as pull low")
+#    define setPinOutput(pin) (DDRx_ADDRESS(pin) |= _BV((pin)&0xF))
+>>>>>>> upstream/master
 
     #define writePinHigh(pin)       (PIN_ADDRESS(pin, 2) |=  _BV((pin) & 0xF))
     #define writePinLow(pin)        (PIN_ADDRESS(pin, 2) &= ~_BV((pin) & 0xF))
     #define writePin(pin, level)    ((level) ? writePinHigh(pin) : writePinLow(pin))
 
+<<<<<<< HEAD
     #define readPin(pin)            ((bool)(PIN_ADDRESS(pin, 0) & _BV((pin) & 0xF)))
+=======
+#    define readPin(pin) ((bool)(PINx_ADDRESS(pin) & _BV((pin)&0xF)))
+
+#    define togglePin(pin) (PORTx_ADDRESS(pin) ^= _BV((pin)&0xF))
+
+>>>>>>> upstream/master
 #elif defined(PROTOCOL_CHIBIOS)
     typedef ioline_t pin_t;
 
@@ -173,7 +224,13 @@ extern layer_state_t default_layer_state;
     #define writePinLow(pin)        palClearLine(pin)
     #define writePin(pin, level)    ((level) ? writePinHigh(pin) : writePinLow(pin))
 
+<<<<<<< HEAD
     #define readPin(pin)            palReadLine(pin)
+=======
+#    define readPin(pin) palReadLine(pin)
+
+#    define togglePin(pin) palToggleLine(pin)
+>>>>>>> upstream/master
 #endif
 
 // Send string macros
@@ -201,9 +258,26 @@ extern layer_state_t default_layer_state;
 
 #define SEND_STRING(string) send_string_P(PSTR(string))
 
+<<<<<<< HEAD
 extern const bool ascii_to_shift_lut[128];
 extern const bool ascii_to_altgr_lut[128];
+=======
+// Look-Up Tables (LUTs) to convert ASCII character to keycode sequence.
+>>>>>>> upstream/master
 extern const uint8_t ascii_to_keycode_lut[128];
+extern const uint8_t ascii_to_shift_lut[16];
+extern const uint8_t ascii_to_altgr_lut[16];
+// clang-format off
+#define KCLUT_ENTRY(a, b, c, d, e, f, g, h) \
+    ( ((a) ? 1 : 0) << 0 \
+    | ((b) ? 1 : 0) << 1 \
+    | ((c) ? 1 : 0) << 2 \
+    | ((d) ? 1 : 0) << 3 \
+    | ((e) ? 1 : 0) << 4 \
+    | ((f) ? 1 : 0) << 5 \
+    | ((g) ? 1 : 0) << 6 \
+    | ((h) ? 1 : 0) << 7 )
+// clang-format on
 
 void send_string(const char *str);
 void send_string_with_delay(const char *str, uint8_t interval);
@@ -219,6 +293,7 @@ void set_single_persistent_default_layer(uint8_t default_layer);
 
 void tap_random_base64(void);
 
+<<<<<<< HEAD
 #define IS_LAYER_ON(layer)  (layer_state & (1UL << (layer)))
 #define IS_LAYER_OFF(layer) (~layer_state & (1UL << (layer)))
 
@@ -231,6 +306,25 @@ uint16_t get_event_keycode(keyevent_t event);
 bool process_action_kb(keyrecord_t *record);
 bool process_record_kb(uint16_t keycode, keyrecord_t *record);
 bool process_record_user(uint16_t keycode, keyrecord_t *record);
+=======
+#define IS_LAYER_ON(layer) layer_state_is(layer)
+#define IS_LAYER_OFF(layer) !layer_state_is(layer)
+
+#define IS_LAYER_ON_STATE(state, layer) layer_state_cmp(state, layer)
+#define IS_LAYER_OFF_STATE(state, layer) !layer_state_cmp(state, layer)
+
+void     matrix_init_kb(void);
+void     matrix_scan_kb(void);
+void     matrix_init_user(void);
+void     matrix_scan_user(void);
+uint16_t get_record_keycode(keyrecord_t *record, bool update_layer_cache);
+uint16_t get_event_keycode(keyevent_t event, bool update_layer_cache);
+bool     process_action_kb(keyrecord_t *record);
+bool     process_record_kb(uint16_t keycode, keyrecord_t *record);
+bool     process_record_user(uint16_t keycode, keyrecord_t *record);
+void     post_process_record_kb(uint16_t keycode, keyrecord_t *record);
+void     post_process_record_user(uint16_t keycode, keyrecord_t *record);
+>>>>>>> upstream/master
 
 #ifndef BOOTMAGIC_LITE_COLUMN
     #define BOOTMAGIC_LITE_COLUMN 0
@@ -250,6 +344,7 @@ void register_code16(uint16_t code);
 void unregister_code16(uint16_t code);
 void tap_code16(uint16_t code);
 
+<<<<<<< HEAD
 #ifdef BACKLIGHT_ENABLE
 void backlight_init_ports(void);
 void backlight_task(void);
@@ -278,6 +373,12 @@ void send_dword(uint32_t number);
 void send_word(uint16_t number);
 void send_byte(uint8_t number);
 void send_nibble(uint8_t number);
+=======
+void     send_dword(uint32_t number);
+void     send_word(uint16_t number);
+void     send_byte(uint8_t number);
+void     send_nibble(uint8_t number);
+>>>>>>> upstream/master
 uint16_t hex_to_keycode(uint8_t hex);
 
 void led_set_user(uint8_t usb_led);

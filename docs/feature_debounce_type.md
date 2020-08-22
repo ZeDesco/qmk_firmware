@@ -36,7 +36,13 @@ Included debounce methods are:
 * eager_pr - debouncing per row. On any state change, response is immediate, followed by locking the row ```DEBOUNCE_DELAY``` milliseconds of no further input for that row. 
 For use in keyboards where refreshing ```NUM_KEYS``` 8-bit counters is computationally expensive / low scan rate, and fingers usually only hit one row at a time. This could be
 appropriate for the ErgoDox models; the matrix is rotated 90°, and hence its "rows" are really columns, and each finger only hits a single "row" at a time in normal use.
+<<<<<<< HEAD
 * eager_pk - debouncing per key. On any state change, response is immediate, followed by ```DEBOUNCE_DELAY``` milliseconds of no further input for that key
 * sym_g - debouncing per keyboard. On any state change, a global timer is set. When ```DEBOUNCE_DELAY``` milliseconds of no changes has occured, all input changes are pushed.
+=======
+* eager_pk - debouncing per key. On any state change, response is immediate, followed by ```DEBOUNCE``` milliseconds of no further input for that key
+* sym_g - debouncing per keyboard. On any state change, a global timer is set. When ```DEBOUNCE``` milliseconds of no changes has occured, all input changes are pushed.
+* sym_pk - debouncing per key. On any state change, a per-key timer is set. When ```DEBOUNCE``` milliseconds of no changes have occured on that key, the key status change is pushed.
+>>>>>>> upstream/master
 
 

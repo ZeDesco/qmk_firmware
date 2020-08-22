@@ -78,9 +78,18 @@ static void steno_clear_state(void) {
 }
 
 static void send_steno_state(uint8_t size, bool send_empty) {
+<<<<<<< HEAD
   for (uint8_t i = 0; i < size; ++i) {
     if (chord[i] || send_empty) {
       virtser_send(chord[i]);
+=======
+    for (uint8_t i = 0; i < size; ++i) {
+        if (chord[i] || send_empty) {
+#ifdef VIRTSER_ENABLE
+            virtser_send(chord[i]);
+#endif
+        }
+>>>>>>> upstream/master
     }
   }
 }
@@ -111,6 +120,7 @@ __attribute__ ((weak))
 bool process_steno_user(uint16_t keycode, keyrecord_t *record) { return true; }
 
 static void send_steno_chord(void) {
+<<<<<<< HEAD
   if (send_steno_chord_user(mode, chord)) {
     switch(mode) {
       case STENO_MODE_BOLT:
@@ -121,6 +131,21 @@ static void send_steno_chord(void) {
         chord[0] |= 0x80; // Indicate start of packet
         send_steno_state(GEMINI_STATE_SIZE, true);
         break;
+=======
+    if (send_steno_chord_user(mode, chord)) {
+        switch (mode) {
+            case STENO_MODE_BOLT:
+                send_steno_state(BOLT_STATE_SIZE, false);
+#ifdef VIRTSER_ENABLE
+                virtser_send(0);  // terminating byte
+#endif
+                break;
+            case STENO_MODE_GEMINI:
+                chord[0] |= 0x80;  // Indicate start of packet
+                send_steno_state(GEMINI_STATE_SIZE, true);
+                break;
+        }
+>>>>>>> upstream/master
     }
   }
   steno_clear_state();

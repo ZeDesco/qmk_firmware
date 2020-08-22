@@ -14,6 +14,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 
 #ifdef __AVR__
 #include <avr/interrupt.h>
@@ -23,10 +24,11 @@
 #include "wait.h"
 #endif
 
+=======
+>>>>>>> upstream/master
 #include "is31fl3736.h"
-#include <string.h>
 #include "i2c_master.h"
-#include "progmem.h"
+#include "wait.h"
 
 
 
@@ -165,11 +167,15 @@ void IS31FL3736_init( uint8_t addr )
     IS31FL3736_write_register( addr, ISSI_REG_CONFIGURATION, 0x01 );
 
     // Wait 10ms to ensure the device has woken up.
+<<<<<<< HEAD
     #ifdef __AVR__
     _delay_ms( 10 );
     #else
     wait_ms(10);
     #endif
+=======
+    wait_ms(10);
+>>>>>>> upstream/master
 }
 
 void IS31FL3736_set_color( int index, uint8_t red, uint8_t green, uint8_t blue )
@@ -283,8 +289,13 @@ void IS31FL3736_update_pwm_buffers( uint8_t addr1, uint8_t addr2 )
         IS31FL3736_write_register( addr1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5 );
         IS31FL3736_write_register( addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_PWM );
 
+<<<<<<< HEAD
         IS31FL3736_write_pwm_buffer( addr1, g_pwm_buffer[0] );
         //IS31FL3736_write_pwm_buffer( addr2, g_pwm_buffer[1] );
+=======
+        IS31FL3736_write_pwm_buffer(addr1, g_pwm_buffer[0]);
+        // IS31FL3736_write_pwm_buffer(addr2, g_pwm_buffer[1]);
+>>>>>>> upstream/master
     }
     g_pwm_buffer_update_required = false;
 }
@@ -294,12 +305,20 @@ void IS31FL3736_update_led_control_registers( uint8_t addr1, uint8_t addr2 )
     if ( g_led_control_registers_update_required )
     {
         // Firstly we need to unlock the command register and select PG0
+<<<<<<< HEAD
         IS31FL3736_write_register( addr1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5 );
         IS31FL3736_write_register( addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_LEDCONTROL );
         for ( int i=0; i<24; i++ )
         {
             IS31FL3736_write_register(addr1, i, g_led_control_registers[0][i] );
             //IS31FL3736_write_register(addr2, i, g_led_control_registers[1][i] );
+=======
+        IS31FL3736_write_register(addr1, ISSI_COMMANDREGISTER_WRITELOCK, 0xC5);
+        IS31FL3736_write_register(addr1, ISSI_COMMANDREGISTER, ISSI_PAGE_LEDCONTROL);
+        for (int i = 0; i < 24; i++) {
+            IS31FL3736_write_register(addr1, i, g_led_control_registers[0][i]);
+            // IS31FL3736_write_register(addr2, i, g_led_control_registers[1][i]);
+>>>>>>> upstream/master
         }
     }
 }

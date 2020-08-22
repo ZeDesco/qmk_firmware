@@ -73,6 +73,7 @@ void mouse_in_cb(USBDriver *usbp, usbep_t ep);
 /* shared IN request callback handler */
 void shared_in_cb(USBDriver *usbp, usbep_t ep);
 
+<<<<<<< HEAD
 /* ---------------
  * Extrakey header
  * ---------------
@@ -87,6 +88,8 @@ typedef struct {
 } __attribute__ ((packed)) report_extra_t;
 #endif /* EXTRAKEY_ENABLE */
 
+=======
+>>>>>>> upstream/master
 /* --------------
  * Console header
  * --------------
@@ -101,7 +104,5 @@ int8_t sendchar(uint8_t c);
 void console_flush_output(void);
 
 #endif /* CONSOLE_ENABLE */
-
-void sendchar_pf(void *p, char c);
 
 #endif /* _USB_MAIN_H_ */

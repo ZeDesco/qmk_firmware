@@ -73,9 +73,13 @@ void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
 
 #elif defined(PROTOCOL_CHIBIOS) /* PROTOCOL_CHIBIOS */
 
+<<<<<<< HEAD
 #ifndef TERMINAL_ENABLE
 #  include "chibios/printf.h"
 #endif
+=======
+#        include "printf.h"  // lib/printf/printf.h
+>>>>>>> upstream/master
 
 #  ifdef USER_PRINT /* USER_PRINT */
 
@@ -89,8 +93,12 @@ void print_set_sendchar(int8_t (*print_sendchar_func)(uint8_t));
 #    define uprintln(s)  printf(s "\r\n")
 #    define uprintf      printf
 
+<<<<<<< HEAD
 #  else /* NORMAL PRINT */
 
+=======
+#        else /* NORMAL PRINT */
+>>>>>>> upstream/master
 // Create user & normal print defines
 #    define print(s)     printf(s)
 #    define println(s)   printf(s "\r\n")

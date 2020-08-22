@@ -51,7 +51,20 @@
 // (aligned to 2 or 4 byte boundaries) has twice the endurance
 // compared to writing 8 bit bytes.
 //
+<<<<<<< HEAD
 #define EEPROM_SIZE 32
+=======
+#    ifndef EEPROM_SIZE
+#        define EEPROM_SIZE 32
+#    endif
+
+/*
+    ^^^ Here be dragons:
+        NXP AppNote AN4282 section 3.1 states that partitioning must only be done once.
+        Once EEPROM partitioning is done, the size is locked to this initial configuration.
+        Attempts to modify the EEPROM_SIZE setting may brick your board.
+*/
+>>>>>>> upstream/master
 
 // Writing unaligned 16 or 32 bit data is handled automatically when
 // this is defined, but at a cost of extra code size.  Without this,
@@ -548,8 +561,16 @@ void eeprom_write_block(const void *buf, void *addr, uint32_t len)
 #else
 // No EEPROM supported, so emulate it
 
+<<<<<<< HEAD
 #define EEPROM_SIZE 32
 static uint8_t buffer[EEPROM_SIZE];
+=======
+#    ifndef EEPROM_SIZE
+#        include "eeconfig.h"
+#        define EEPROM_SIZE (((EECONFIG_SIZE + 3) / 4) * 4)  // based off eeconfig's current usage, aligned to 4-byte sizes, to deal with LTO
+#    endif
+__attribute__((aligned(4))) static uint8_t buffer[EEPROM_SIZE];
+>>>>>>> upstream/master
 
 uint8_t eeprom_read_byte(const uint8_t *addr) {
 	uint32_t offset = (uint32_t)addr;
@@ -572,12 +593,21 @@ uint32_t eeprom_read_dword(const uint32_t *addr) {
 		| (eeprom_read_byte(p+2) << 16) | (eeprom_read_byte(p+3) << 24);
 }
 
+<<<<<<< HEAD
 void eeprom_read_block(void *buf, const void *addr, uint32_t len) {
 	const uint8_t *p = (const uint8_t *)addr;
 	uint8_t *dest = (uint8_t *)buf;
 	while (len--) {
 		*dest++ = eeprom_read_byte(p++);
 	}
+=======
+void eeprom_read_block(void *buf, const void *addr, size_t len) {
+    const uint8_t *p    = (const uint8_t *)addr;
+    uint8_t *      dest = (uint8_t *)buf;
+    while (len--) {
+        *dest++ = eeprom_read_byte(p++);
+    }
+>>>>>>> upstream/master
 }
 
 void eeprom_write_word(uint16_t *addr, uint16_t value) {
@@ -594,12 +624,21 @@ void eeprom_write_dword(uint32_t *addr, uint32_t value) {
 	eeprom_write_byte(p, value >> 24);
 }
 
+<<<<<<< HEAD
 void eeprom_write_block(const void *buf, void *addr, uint32_t len) {
 	uint8_t *p = (uint8_t *)addr;
 	const uint8_t *src = (const uint8_t *)buf;
 	while (len--) {
 		eeprom_write_byte(p++, *src++);
 	}
+=======
+void eeprom_write_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+    const uint8_t *src = (const uint8_t *)buf;
+    while (len--) {
+        eeprom_write_byte(p++, *src++);
+    }
+>>>>>>> upstream/master
 }
 
 #endif /* chip selection */
@@ -623,10 +662,19 @@ void eeprom_update_dword(uint32_t *addr, uint32_t value) {
 	eeprom_write_byte(p, value >> 24);
 }
 
+<<<<<<< HEAD
 void eeprom_update_block(const void *buf, void *addr, uint32_t len) {
 	uint8_t *p = (uint8_t *)addr;
 	const uint8_t *src = (const uint8_t *)buf;
 	while (len--) {
 		eeprom_write_byte(p++, *src++);
 	}
+=======
+void eeprom_update_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+    const uint8_t *src = (const uint8_t *)buf;
+    while (len--) {
+        eeprom_write_byte(p++, *src++);
+    }
+>>>>>>> upstream/master
 }

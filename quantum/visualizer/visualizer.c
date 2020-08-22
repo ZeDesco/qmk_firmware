@@ -372,7 +372,7 @@ static DECLARE_THREAD_FUNCTION(visualizerThread, arg) {
 
         // On windows the system ticks is the same as milliseconds anyway
         if (sleep_time != TIME_INFINITE) {
-            sleep_time = ST2MS(sleep_time);
+            sleep_time = TIME_I2MS(sleep_time);
         }
 #endif
         geventEventWait(&event_listener, sleep_time);
@@ -418,11 +418,19 @@ void update_status(bool changed) {
         }
     }
 #ifdef SERIAL_LINK_ENABLE
+<<<<<<< HEAD
     static systime_t last_update = 0;
     systime_t current_update = chVTGetSystemTimeX();
     systime_t delta = current_update - last_update;
     if (changed || delta > MS2ST(10)) {
         last_update = current_update;
+=======
+    static systime_t last_update    = 0;
+    systime_t        current_update = chVTGetSystemTimeX();
+    systime_t        delta          = current_update - last_update;
+    if (changed || delta > TIME_MS2I(10)) {
+        last_update                     = current_update;
+>>>>>>> upstream/master
         visualizer_keyboard_status_t* r = begin_write_current_status();
         *r = current_status;
         end_write_current_status();

@@ -17,9 +17,12 @@
 #include "print.h"
 #include "process_combo.h"
 
-__attribute__((weak)) combo_t key_combos[COMBO_COUNT] = {
-
-};
+#ifndef COMBO_VARIABLE_LEN
+__attribute__((weak)) combo_t key_combos[COMBO_COUNT] = {};
+#else
+extern combo_t  key_combos[];
+extern int      COMBO_LEN;
+#endif
 
 __attribute__((weak)) void process_combo_event(uint8_t combo_index,
                                                bool pressed) {}
@@ -125,6 +128,7 @@ static bool process_single_combo(combo_t *combo, uint16_t keycode,
 #define NO_COMBO_KEYS_ARE_DOWN (0 == combo->state)
 
 bool process_combo(uint16_t keycode, keyrecord_t *record) {
+<<<<<<< HEAD
   bool is_combo_key = false;
   drop_buffer = false;
   bool no_combo_keys_pressed = true;
@@ -166,6 +170,38 @@ bool process_combo(uint16_t keycode, keyrecord_t *record) {
     if (no_combo_keys_pressed) {
       timer = 0;
       is_active = true;
+=======
+    bool is_combo_key          = false;
+    drop_buffer                = false;
+    bool no_combo_keys_pressed = true;
+
+    if (keycode == CMB_ON && record->event.pressed) {
+        combo_enable();
+        return true;
+    }
+
+    if (keycode == CMB_OFF && record->event.pressed) {
+        combo_disable();
+        return true;
+    }
+
+    if (keycode == CMB_TOG && record->event.pressed) {
+        combo_toggle();
+        return true;
+    }
+
+    if (!is_combo_enabled()) {
+        return true;
+    }
+#ifndef COMBO_VARIABLE_LEN
+    for (current_combo_index = 0; current_combo_index < COMBO_COUNT; ++current_combo_index) {
+#else
+    for (current_combo_index = 0; current_combo_index < COMBO_LEN; ++current_combo_index) {
+#endif
+        combo_t *combo = &key_combos[current_combo_index];
+        is_combo_key |= process_single_combo(combo, keycode, record);
+        no_combo_keys_pressed = no_combo_keys_pressed && NO_COMBO_KEYS_ARE_DOWN;
+>>>>>>> upstream/master
     }
   } else if (record->event.pressed && is_active) {
     /* otherwise the key is consumed and placed in the buffer */

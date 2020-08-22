@@ -210,6 +210,57 @@ void bootloader_jump(void) {
         for (;;);
     #endif
 
+<<<<<<< HEAD
+=======
+#elif defined(BOOTLOADER_USBASP)
+    // Taken with permission of Stephan Baerwolf from https://github.com/tinyusbboard/API/blob/master/apipage.c
+    wdt_enable(WDTO_15MS);
+    wdt_reset();
+    asm volatile("cli                    \n\t"
+                 "ldi    r29 ,       %[ramendhi] \n\t"
+                 "ldi    r28 ,       %[ramendlo] \n\t"
+#    if (FLASHEND > 131071)
+                 "ldi    r18 ,       %[bootaddrhi]   \n\t"
+                 "st     Y+,         r18     \n\t"
+#    endif
+                 "ldi    r18 ,       %[bootaddrme]   \n\t"
+                 "st     Y+,     r18     \n\t"
+                 "ldi    r18 ,       %[bootaddrlo]   \n\t"
+                 "st     Y+,     r18     \n\t"
+                 "out    %[mcucsrio],    __zero_reg__    \n\t"
+                 "bootloader_startup_loop%=:         \n\t"
+                 "rjmp bootloader_startup_loop%=     \n\t"
+                 :
+                 : [mcucsrio] "I"(_SFR_IO_ADDR(MCUCSR)),
+#    if (FLASHEND > 131071)
+                   [ramendhi] "M"(((RAMEND - 2) >> 8) & 0xff), [ramendlo] "M"(((RAMEND - 2) >> 0) & 0xff), [bootaddrhi] "M"((((FLASH_SIZE - BOOTLOADER_SIZE) >> 1) >> 16) & 0xff),
+#    else
+                   [ramendhi] "M"(((RAMEND - 1) >> 8) & 0xff), [ramendlo] "M"(((RAMEND - 1) >> 0) & 0xff),
+#    endif
+                   [bootaddrme] "M"((((FLASH_SIZE - BOOTLOADER_SIZE) >> 1) >> 8) & 0xff), [bootaddrlo] "M"((((FLASH_SIZE - BOOTLOADER_SIZE) >> 1) >> 0) & 0xff));
+
+#else  // Assume remaining boards are DFU, even if the flag isn't set
+
+#    if !(defined(__AVR_ATmega32A__) || defined(__AVR_ATmega328P__) || defined(__AVR_ATmega328__) || defined(__AVR_ATtiny85__))  // no USB - maybe BOOTLOADER_BOOTLOADHID instead though?
+    UDCON  = 1;
+    USBCON = (1 << FRZCLK);  // disable USB
+    UCSR1B = 0;
+    _delay_ms(5);  // 5 seems to work fine
+#    endif
+
+#    ifdef BOOTLOADER_BOOTLOADHID
+    // force bootloadHID to stay in bootloader mode, so that it waits
+    // for a new firmware to be flashed
+    eeprom_write_byte((uint8_t *)1, 0x00);
+#    endif
+
+    // watchdog reset
+    reset_key = BOOTLOADER_RESET_KEY;
+    wdt_enable(WDTO_250MS);
+    for (;;)
+        ;
+#endif
+>>>>>>> upstream/master
 }
 
 /* this runs before main() */

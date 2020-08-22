@@ -170,12 +170,32 @@ class ConfigurationOption(Configuration):
         self.default_container = dict
 
     def __getitem__(self, key):
+<<<<<<< HEAD
         """Returns a config section, creating it if it doesn't exist yet.
         """
         if key not in self._config:
             self.__dict__[key] = self._config[key] = None
+=======
+        """Returns a config value, pulling from the `user` section as a fallback.
+        This is called when the attribute is accessed either via the get method or through [ ] index.
+        """
+        if key in self._config and self._config.get(key) is not None:
+            return self._config[key]
+
+        elif key in self.parent.user:
+            return self.parent.user[key]
+>>>>>>> upstream/master
 
         return self._config[key]
+
+    def __getattr__(self, key):
+        """Returns the config value from the `user` section.
+        This is called when the attribute is accessed via dot notation but does not exists.
+        """
+        if key in self.parent.user:
+            return self.parent.user[key]
+
+        return None
 
 
 def handle_store_boolean(self, *args, **kwargs):
@@ -224,17 +244,38 @@ class SubparserWrapper(object):
         if 'add_dest' in kwargs:
             del kwargs['add_dest']
 
+<<<<<<< HEAD
         if 'action' in kwargs and kwargs['action'] == 'store_boolean':
+=======
+        This also stores the default for the argument in `self.cli.default_arguments`.
+        """
+        if kwargs.get('action') == 'store_boolean':
+            # Store boolean will call us again with the enable/disable flag arguments
+>>>>>>> upstream/master
             return handle_store_boolean(self, *args, **kwargs)
 
         self.cli.acquire_lock()
+        argument_name = self.cli.get_argument_name(*args, **kwargs)
+
         self.subparser.add_argument(*args, **kwargs)
 
+<<<<<<< HEAD
         if 'default' in kwargs:
             del kwargs['default']
         if 'action' in kwargs and kwargs['action'] == 'store_false':
             kwargs['action'] == 'store_true'
         self.cli.subcommands_default[self.submodule].add_argument(*args, **kwargs)
+=======
+        if kwargs.get('action') == 'store_false':
+            self.cli._config_store_false.append(argument_name)
+
+        if kwargs.get('action') == 'store_true':
+            self.cli._config_store_true.append(argument_name)
+
+        if self.submodule not in self.cli.default_arguments:
+            self.cli.default_arguments[self.submodule] = {}
+        self.cli.default_arguments[self.submodule][argument_name] = kwargs.get('default')
+>>>>>>> upstream/master
         self.cli.release_lock()
 
 
@@ -250,11 +291,18 @@ class MILC(object):
 
         # Define some basic info
         self.acquire_lock()
+        self._config_store_true = []
+        self._config_store_false = []
         self._description = None
         self._entrypoint = None
         self._inside_context_manager = False
         self.ansi = ansi_colors
+<<<<<<< HEAD
         self.config = Configuration()
+=======
+        self.arg_only = {}
+        self.config = self.config_source = None
+>>>>>>> upstream/master
         self.config_file = None
         self.prog_name = sys.argv[0][:-3] if sys.argv[0].endswith('.py') else sys.argv[0]
         self.version = os.environ.get('QMK_VERSION', 'unknown')
@@ -363,8 +411,13 @@ class MILC(object):
         self.add_argument('--log-file-fmt', default='[%(levelname)s] [%(asctime)s] [file:%(pathname)s] [line:%(lineno)d] %(message)s', help='Format string for log file.')
         self.add_argument('--log-file', help='File to write log messages to')
         self.add_argument('--color', action='store_boolean', default=True, help='color in output')
+<<<<<<< HEAD
         self.add_argument('-c', '--config-file', help='The config file to read and/or write')
         self.add_argument('--save-config', action='store_true', help='Save the running configuration to the config file')
+=======
+        self.add_argument('--config-file', help='The location for the configuration file')
+        self.arg_only['config_file'] = ['general']
+>>>>>>> upstream/master
 
     def add_subparsers(self, title='Sub-commands', **kwargs):
         if self._inside_context_manager:
@@ -413,11 +466,28 @@ class MILC(object):
             raise RuntimeError('You must run this before the with statement!')
 
         def argument_function(handler):
+<<<<<<< HEAD
             if handler is self._entrypoint:
                 self.add_argument(*args, **kwargs)
 
             elif handler.__name__ in self.subcommands:
                 self.subcommands[handler.__name__].add_argument(*args, **kwargs)
+=======
+            subcommand_name = handler.__name__.replace("_", "-")
+
+            if kwargs.get('arg_only'):
+                arg_name = self.get_argument_name(*args, **kwargs)
+                if arg_name not in self.arg_only:
+                    self.arg_only[arg_name] = []
+                self.arg_only[arg_name].append(subcommand_name)
+                del kwargs['arg_only']
+
+            if handler is self._entrypoint:
+                self.add_argument(*args, **kwargs)
+
+            elif subcommand_name in self.subcommands:
+                self.subcommands[subcommand_name].add_argument(*args, **kwargs)
+>>>>>>> upstream/master
 
             else:
                 raise RuntimeError('Decorated function is not entrypoint or subcommand!')
@@ -456,6 +526,11 @@ class MILC(object):
         """Parse the configuration file and determine the runtime configuration.
         """
         self.acquire_lock()
+<<<<<<< HEAD
+=======
+        self.config = Configuration()
+        self.config_source = Configuration()
+>>>>>>> upstream/master
         self.config_file = self.find_config_file()
 
         if self.config_file and os.path.exists(self.config_file):
@@ -479,12 +554,14 @@ class MILC(object):
                             value = int(value)
 
                     self.config[section][option] = value
+                    self.config_source[section][option] = 'config_file'
 
         # Fold the CLI args into self.config
         for argument in vars(self.args):
             if argument in ('subparsers', 'entrypoint'):
                 continue
 
+<<<<<<< HEAD
             if '_' not in argument:
                 continue
 
@@ -494,6 +571,39 @@ class MILC(object):
             else:
                 if option not in self.config[section]:
                     self.config[section][option] = getattr(self.args, argument)
+=======
+            # Find the argument's section
+            # Underscores in command's names are converted to dashes during initialization.
+            # TODO(Erovia) Find a better solution
+            entrypoint_name = self._entrypoint.__name__.replace("_", "-")
+            if entrypoint_name in self.default_arguments and argument in self.default_arguments[entrypoint_name]:
+                argument_found = True
+                section = self._entrypoint.__name__
+            if argument in self.default_arguments['general']:
+                argument_found = True
+                section = 'general'
+
+            if not argument_found:
+                raise RuntimeError('Could not find argument in `self.default_arguments`. This should be impossible!')
+                exit(1)
+
+            if argument not in self.arg_only or section not in self.arg_only[argument]:
+                # Determine the arg value and source
+                arg_value = getattr(self.args, argument)
+                if argument in self._config_store_true and arg_value:
+                    passed_on_cmdline = True
+                elif argument in self._config_store_false and not arg_value:
+                    passed_on_cmdline = True
+                elif arg_value is not None:
+                    passed_on_cmdline = True
+                else:
+                    passed_on_cmdline = False
+
+                # Merge this argument into self.config
+                if passed_on_cmdline and (argument in self.default_arguments['general'] or argument in self.default_arguments[entrypoint_name] or argument not in self.config[entrypoint_name]):
+                    self.config[section][argument] = arg_value
+                    self.config_source[section][argument] = 'argument'
+>>>>>>> upstream/master
 
         self.release_lock()
 
@@ -522,7 +632,11 @@ class MILC(object):
 
         # Move the new config file into place atomically
         if os.path.getsize(tmpfile.name) > 0:
+<<<<<<< HEAD
             os.rename(tmpfile.name, self.config_file)
+=======
+            os.replace(tmpfile.name, str(self.config_file))
+>>>>>>> upstream/master
         else:
             self.log.warning('Config file saving failed, not replacing %s with %s.', self.config_file, tmpfile.name)
 

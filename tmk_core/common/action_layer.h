@@ -23,10 +23,32 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #if defined(LAYER_STATE_8BIT) || ( defined(DYNAMIC_KEYMAP_ENABLE) && DYNAMIC_KEYMAP_LAYER_COUNT >= 8 )
 typedef uint8_t layer_state_t;
+<<<<<<< HEAD
 #elif defined(LAYER_STATE_16BIT)
 typedef uint16_t layer_state_t;
 #else
 typedef uint32_t layer_state_t;
+=======
+#    define MAX_LAYER_BITS 3
+#    ifndef MAX_LAYER
+#        define MAX_LAYER 8
+#    endif
+#    define get_highest_layer(state) biton(state)
+#elif defined(LAYER_STATE_16BIT)
+typedef uint16_t layer_state_t;
+#    define MAX_LAYER_BITS 4
+#    ifndef MAX_LAYER
+#        define MAX_LAYER 16
+#    endif
+#    define get_highest_layer(state) biton16(state)
+#else
+typedef uint32_t layer_state_t;
+#    define MAX_LAYER_BITS 5
+#    ifndef MAX_LAYER
+#        define MAX_LAYER 32
+#    endif
+#    define get_highest_layer(state) biton32(state)
+>>>>>>> upstream/master
 #endif
 
 
@@ -75,6 +97,7 @@ void layer_or(layer_state_t state);
 void layer_and(layer_state_t state);
 void layer_xor(layer_state_t state);
 #else
+<<<<<<< HEAD
 #define layer_state                    0
 
 #define layer_state_set(layer)
@@ -90,6 +113,23 @@ void layer_xor(layer_state_t state);
 #define layer_or(state)
 #define layer_and(state)
 #define layer_xor(state)
+=======
+#    define layer_state 0
+
+#    define layer_state_set(layer)
+#    define layer_state_is(layer) (layer == 0)
+#    define layer_state_cmp(state, layer) (state == 0 ? layer == 0 : (state & 1UL << layer) != 0)
+
+#    define layer_debug()
+#    define layer_clear()
+#    define layer_move(layer) (void)layer
+#    define layer_on(layer) (void)layer
+#    define layer_off(layer) (void)layer
+#    define layer_invert(layer) (void)layer
+#    define layer_or(state) (void)state
+#    define layer_and(state) (void)state
+#    define layer_xor(state) (void)state
+>>>>>>> upstream/master
 #endif
 
 layer_state_t layer_state_set_user(layer_state_t state);
@@ -97,9 +137,14 @@ layer_state_t layer_state_set_kb(layer_state_t state);
 
 /* pressed actions cache */
 #if !defined(NO_ACTION_LAYER) && !defined(STRICT_LAYER_RELEASE)
+<<<<<<< HEAD
 /* The number of bits needed to represent the layer number: log2(32). */
 #define MAX_LAYER_BITS 5
 void update_source_layers_cache(keypos_t key, uint8_t layer);
+=======
+
+void    update_source_layers_cache(keypos_t key, uint8_t layer);
+>>>>>>> upstream/master
 uint8_t read_source_layers_cache(keypos_t key);
 #endif
 action_t store_or_get_action(bool pressed, keypos_t key);

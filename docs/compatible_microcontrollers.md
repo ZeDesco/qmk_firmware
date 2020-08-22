@@ -17,7 +17,13 @@ Please add any tested microcontrollers to this list.
 
 # ARM
 
+<<<<<<< HEAD
 You can also use any ARM processor that [ChibiOS](http://www.chibios.org) supports. The following processors have been tested:
+=======
+* [ATmega32A](https://www.microchip.com/wwwproducts/en/ATmega32A)
+* [ATmega328P](https://www.microchip.com/wwwproducts/en/ATmega328P)
+* [ATmega328](https://www.microchip.com/wwwproducts/en/ATmega328)
+>>>>>>> upstream/master
 
 * [Kinetis MKL26Z64](http://www.nxp.com/products/microcontrollers-and-processors/arm-processors/kinetis-cortex-m-mcus/l-series-ultra-low-power-m0-plus/kinetis-kl2x-48-mhz-usb-ultra-low-power-microcontrollers-mcus-based-on-arm-cortex-m0-plus-core:KL2x)
 * [Kinetis MK20DX128](http://www.nxp.com/assets/documents/data/en/data-sheets/K20P64M50SF0.pdf)

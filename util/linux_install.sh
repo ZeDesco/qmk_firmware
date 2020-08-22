@@ -10,6 +10,21 @@ SOLUS_INFO="Your tools are now installed. To start using them, open new terminal
 
 util_dir=$(dirname "$0")
 
+<<<<<<< HEAD
+=======
+# For those distros that do not package bootloadHID
+install_bootloadhid() {
+    if ! command -v bootloadHID >/dev/null; then
+        wget https://www.obdev.at/downloads/vusb/bootloadHID.2012-12-08.tar.gz -O - | tar -xz -C /tmp
+        cd /tmp/bootloadHID.2012-12-08/commandline/
+        if make; then
+            sudo cp bootloadHID /usr/local/bin
+        fi
+        cd -
+    fi
+}
+
+>>>>>>> upstream/master
 if grep ID /etc/os-release | grep -qE "fedora"; then
 	sudo dnf install \
 		arm-none-eabi-binutils-cs \
@@ -19,6 +34,11 @@ if grep ID /etc/os-release | grep -qE "fedora"; then
 		avr-gcc \
 		avr-libc \
 		binutils-avr32-linux-gnu \
+<<<<<<< HEAD
+=======
+		clang \
+		avrdude \
+>>>>>>> upstream/master
 		dfu-util \
 		dfu-programmer \
 		diffutils \
@@ -52,22 +72,36 @@ elif grep ID /etc/os-release | grep -qE 'debian|ubuntu'; then
 		gcc-avr \
 		git \
 		libnewlib-arm-none-eabi \
+<<<<<<< HEAD
+=======
+		avrdude \
+		libusb-dev \
+>>>>>>> upstream/master
 		python3 \
 		unzip \
 		wget \
 		zip
 
 elif grep ID /etc/os-release | grep -q 'arch\|manjaro'; then
+<<<<<<< HEAD
 	sudo pacman -U https://archive.archlinux.org/packages/a/avr-gcc/avr-gcc-8.3.0-1-x86_64.pkg.tar.xz
 	sudo pacman -S \
+=======
+	sudo pacman --needed -U https://archive.archlinux.org/packages/a/avr-gcc/avr-gcc-8.3.0-1-x86_64.pkg.tar.xz
+	sudo pacman -S --needed \
+>>>>>>> upstream/master
 		arm-none-eabi-binutils \
 		arm-none-eabi-gcc \
 		arm-none-eabi-newlib \
 		avrdude \
 		avr-binutils \
 		avr-libc \
-		avr-gcc \
 		base-devel \
+<<<<<<< HEAD
+=======
+		clang \
+		dfu-programmer \
+>>>>>>> upstream/master
 		dfu-util \
 		diffutils \
 		gcc \
@@ -89,16 +123,22 @@ elif grep ID /etc/os-release | grep -q gentoo; then
 		sudo touch /etc/portage/package.use/qmkfirmware
 		# tee is used here since sudo doesn't apply to >>
 		echo "sys-devel/gcc multilib" | sudo tee --append /etc/portage/package.use/qmkfirmware >/dev/null
-		sudo emerge -auN \
+		sudo emerge -auN sys-devel/gcc
+		sudo emerge -au --noreplace \
 			app-arch/unzip \
 			app-arch/zip \
 			app-mobilephone/dfu-util \
+			dev-embedded/dfu-programmer \
 			dev-embedded/avrdude \
-			dev-lang/python:3.5 \
 			net-misc/wget \
+<<<<<<< HEAD
 			sys-devel/gcc \
+=======
+			sys-devel/clang \
+>>>>>>> upstream/master
 			sys-devel/crossdev
-		sudo crossdev -s4 --stable --g =4.9.4 --portage --verbose --target avr
+		sudo crossdev -s4 --stable --g \<9 --portage --verbose --target avr
+		sudo crossdev -s4 --stable --g \<9 --portage --verbose --target arm-none-eabi
 		echo "Done!"
 	else
 		echo "Quitting..."
@@ -109,12 +149,14 @@ elif grep ID /etc/os-release | grep -q sabayon; then
 		app-arch/unzip \
 		app-arch/zip \
 		app-mobilephone/dfu-util \
+		dev-embedded/dfu-programmer \
 		dev-embedded/avrdude \
 		dev-lang/python \
 		net-misc/wget \
 		sys-devel/gcc \
 		sys-devel/crossdev
-	sudo crossdev -s4 --stable --g =4.9.4 --portage --verbose --target avr
+	sudo crossdev -s4 --stable --g \<9 --portage --verbose --target avr
+	sudo crossdev -s4 --stable --g \<9 --portage --verbose --target arm-none-eabi
 	echo "Done!"
 
 elif grep ID /etc/os-release | grep -qE "opensuse|tumbleweed"; then
@@ -131,7 +173,8 @@ elif grep ID /etc/os-release | grep -qE "opensuse|tumbleweed"; then
 		cross-avr-binutils \
 		cross-arm-none-newlib-devel \
 		cross-arm-binutils cross-arm-none-newlib-devel \
-		dfu-tool \
+		avrdude \
+		dfu-util \
 		dfu-programmer \
 		gcc \
 		python3 \
@@ -180,6 +223,28 @@ elif grep ID /etc/os-release | grep -q solus; then
 		unzip
 	printf "\n$SOLUS_INFO\n"
 
+<<<<<<< HEAD
+=======
+elif grep ID /etc/os-release | grep -q void; then
+	sudo xbps-install \
+		avr-binutils \
+		avr-gcc \
+		avr-libc \
+		cross-arm-none-eabi-binutils \
+		cross-arm-none-eabi-gcc \
+		cross-arm-none-eabi-newlib \
+		avrdude \
+		dfu-programmer \
+		dfu-util \
+		gcc \
+		git \
+		libusb-compat-devel \
+		make \
+		wget \
+		unzip \
+		zip
+
+>>>>>>> upstream/master
 else
 	echo "Sorry, we don't recognize your OS. Help us by contributing support!"
 	echo

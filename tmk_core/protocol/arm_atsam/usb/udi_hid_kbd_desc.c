@@ -114,6 +114,7 @@ UDC_DESC_STORAGE usb_dev_qual_desc_t udc_device_qual = {
 //! USB Device Configuration Descriptor filled for FS and HS
 COMPILER_WORD_ALIGNED
 UDC_DESC_STORAGE udc_desc_t udc_desc = {
+<<<<<<< HEAD
     .conf.bLength              = sizeof(usb_conf_desc_t),
     .conf.bDescriptorType      = USB_DT_CONFIGURATION,
     .conf.wTotalLength         = LE16(sizeof(udc_desc_t)),
@@ -142,10 +143,39 @@ UDC_DESC_STORAGE udc_desc_t udc_desc = {
 #endif
 #ifdef CDC
   .cdc_serial                = CDC_DESCRIPTOR,
+=======
+    .conf.bLength             = sizeof(usb_conf_desc_t),
+    .conf.bDescriptorType     = USB_DT_CONFIGURATION,
+    .conf.wTotalLength        = LE16(sizeof(udc_desc_t)),
+    .conf.bNumInterfaces      = USB_DEVICE_NB_INTERFACE,
+    .conf.bConfigurationValue = 1,
+    .conf.iConfiguration      = 0,
+    .conf.bmAttributes        = /* USB_CONFIG_ATTR_MUST_SET | */ USB_DEVICE_ATTR,
+    .conf.bMaxPower           = USB_CONFIG_MAX_POWER(USB_DEVICE_POWER),
+    .hid_kbd = UDI_HID_KBD_DESC,
+#ifdef RAW_ENABLE
+    .hid_raw = UDI_HID_RAW_DESC,
+#endif
+#ifdef MOUSE_ENABLE
+    .hid_mou = UDI_HID_MOU_DESC,
+#endif
+#ifdef EXTRAKEY_ENABLE
+    .hid_exk = UDI_HID_EXK_DESC,
+#endif
+#ifdef CONSOLE_ENABLE
+    .hid_con = UDI_HID_CON_DESC,
+#endif
+#ifdef NKRO_ENABLE
+    .hid_nkro = UDI_HID_NKRO_DESC,
+#endif
+#ifdef VIRTSER_ENABLE
+    .cdc_serial = CDC_DESCRIPTOR,
+>>>>>>> upstream/master
 #endif
 };
 
 UDC_DESC_STORAGE udi_api_t *udi_apis[USB_DEVICE_NB_INTERFACE] = {
+<<<<<<< HEAD
   #ifdef KBD
     &udi_api_hid_kbd,
   #endif
@@ -167,6 +197,27 @@ UDC_DESC_STORAGE udi_api_t *udi_apis[USB_DEVICE_NB_INTERFACE] = {
   #ifdef CDC
   &udi_api_cdc_comm, &udi_api_cdc_data,
   #endif
+=======
+    &udi_api_hid_kbd,
+#ifdef RAW_ENABLE
+    &udi_api_hid_raw,
+#endif
+#ifdef MOUSE_ENABLE
+    &udi_api_hid_mou,
+#endif
+#ifdef EXTRAKEY_ENABLE
+    &udi_api_hid_exk,
+#endif
+#ifdef CONSOLE_ENABLE
+    &udi_api_hid_con,
+#endif
+#ifdef NKRO_ENABLE
+    &udi_api_hid_nkro,
+#endif
+#ifdef VIRTSER_ENABLE
+    &udi_api_cdc_comm, &udi_api_cdc_data,
+#endif
+>>>>>>> upstream/master
 };
 
 //! Add UDI with USB Descriptors FS & HS

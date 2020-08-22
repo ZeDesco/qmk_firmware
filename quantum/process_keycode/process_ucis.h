@@ -22,10 +22,18 @@
 #ifndef UCIS_MAX_SYMBOL_LENGTH
 #define UCIS_MAX_SYMBOL_LENGTH 32
 #endif
+#ifndef UCIS_MAX_CODE_POINTS
+#    define UCIS_MAX_CODE_POINTS 3
+#endif
 
 typedef struct {
+<<<<<<< HEAD
   char *symbol;
   char *code;
+=======
+    char *   symbol;
+    uint32_t code_points[UCIS_MAX_CODE_POINTS];
+>>>>>>> upstream/master
 } qk_ucis_symbol_t;
 
 typedef struct {
@@ -36,8 +44,22 @@ typedef struct {
 
 extern qk_ucis_state_t qk_ucis_state;
 
+<<<<<<< HEAD
 #define UCIS_TABLE(...) {__VA_ARGS__, {NULL, NULL}}
 #define UCIS_SYM(name, code) {name, #code}
+=======
+// clang-format off
+
+#define UCIS_TABLE(...) \
+    {                   \
+        __VA_ARGS__,    \
+        { NULL, {} }    \
+    }
+#define UCIS_SYM(name, ...) \
+    { name, {__VA_ARGS__} }
+
+// clang-format on
+>>>>>>> upstream/master
 
 extern const qk_ucis_symbol_t ucis_symbol_table[];
 
@@ -45,5 +67,12 @@ void qk_ucis_start(void);
 void qk_ucis_start_user(void);
 void qk_ucis_symbol_fallback (void);
 void qk_ucis_success(uint8_t symbol_index);
+<<<<<<< HEAD
 void register_ucis(const char *hex);
 bool process_ucis (uint16_t keycode, keyrecord_t *record);
+=======
+
+void register_ucis(const uint32_t *code_points);
+
+bool process_ucis(uint16_t keycode, keyrecord_t *record);
+>>>>>>> upstream/master

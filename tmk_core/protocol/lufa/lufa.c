@@ -54,7 +54,6 @@
 #include "quantum.h"
 #include <util/atomic.h>
 #include "outputselect.h"
-#include "rgblight_reconfig.h"
 
 #ifdef NKRO_ENABLE
   #include "keycode_config.h"
@@ -79,10 +78,13 @@
     #include "virtser.h"
 #endif
 
+<<<<<<< HEAD
 #if (defined(RGB_MIDI) | defined(RGBLIGHT_ANIMATIONS)) & defined(RGBLIGHT_ENABLE)
     #include "rgblight.h"
 #endif
 
+=======
+>>>>>>> upstream/master
 #ifdef MIDI_ENABLE
   #include "qmk_midi.h"
 #endif
@@ -715,22 +717,30 @@ static void send_mouse(report_mouse_t *report)
 #endif
 }
 
-/** \brief Send System
+/** \brief Send Extra
  *
  * FIXME: Needs doc
  */
+<<<<<<< HEAD
 static void send_system(uint16_t data)
 {
+=======
+>>>>>>> upstream/master
 #ifdef EXTRAKEY_ENABLE
+static void send_extra(uint8_t report_id, uint16_t data) {
     uint8_t timeout = 255;
 
     if (USB_DeviceState != DEVICE_STATE_Configured)
         return;
 
+<<<<<<< HEAD
     report_extra_t r = {
         .report_id = REPORT_ID_SYSTEM,
         .usage = data - SYSTEM_POWER_DOWN + 1
     };
+=======
+    report_extra_t r = {.report_id = report_id, .usage = data};
+>>>>>>> upstream/master
     Endpoint_SelectEndpoint(SHARED_IN_EPNUM);
 
     /* Check if write ready for a polling interval around 10ms */
@@ -739,6 +749,16 @@ static void send_system(uint16_t data)
 
     Endpoint_Write_Stream_LE(&r, sizeof(report_extra_t), NULL);
     Endpoint_ClearIN();
+}
+#endif
+
+/** \brief Send System
+ *
+ * FIXME: Needs doc
+ */
+static void send_system(uint16_t data) {
+#ifdef EXTRAKEY_ENABLE
+    send_extra(REPORT_ID_SYSTEM, data);
 #endif
 }
 
@@ -749,7 +769,10 @@ static void send_system(uint16_t data)
 static void send_consumer(uint16_t data)
 {
 #ifdef EXTRAKEY_ENABLE
+<<<<<<< HEAD
     uint8_t timeout = 255;
+=======
+>>>>>>> upstream/master
     uint8_t where = where_to_send();
 
 #ifdef BLUETOOTH_ENABLE
@@ -788,6 +811,7 @@ static void send_consumer(uint16_t data)
       return;
     }
 
+<<<<<<< HEAD
     report_extra_t r = {
         .report_id = REPORT_ID_CONSUMER,
         .usage = data
@@ -800,6 +824,9 @@ static void send_consumer(uint16_t data)
 
     Endpoint_Write_Stream_LE(&r, sizeof(report_extra_t), NULL);
     Endpoint_ClearIN();
+=======
+    send_extra(REPORT_ID_CONSUMER, data);
+>>>>>>> upstream/master
 #endif
 }
 
@@ -869,11 +896,14 @@ ERROR_EXIT:
     Endpoint_SelectEndpoint(ep);
     return -1;
 }
+<<<<<<< HEAD
 #else
 int8_t sendchar(uint8_t c)
 {
     return 0;
 }
+=======
+>>>>>>> upstream/master
 #endif
 
 /*******************************************************************************
@@ -940,6 +970,7 @@ void virtser_recv(uint8_t c)
  *
  * FIXME: Needs doc
  */
+<<<<<<< HEAD
 void virtser_task(void)
 {
   uint16_t count = CDC_Device_BytesReceived(&cdc_device);
@@ -949,6 +980,15 @@ void virtser_task(void)
     ch = CDC_Device_ReceiveByte(&cdc_device);
     virtser_recv(ch);
   }
+=======
+void virtser_task(void) {
+    uint16_t count = CDC_Device_BytesReceived(&cdc_device);
+    uint8_t  ch;
+    for (; count; --count) {
+        ch = CDC_Device_ReceiveByte(&cdc_device);
+        virtser_recv(ch);
+    }
+>>>>>>> upstream/master
 }
 /** \brief Virtual Serial Send
  *
@@ -1082,10 +1122,13 @@ int main(void)
         MIDI_Device_USBTask(&USB_MIDI_Interface);
 #endif
 
+<<<<<<< HEAD
 #if defined(RGBLIGHT_ANIMATIONS) & defined(RGBLIGHT_ENABLE)
         rgblight_task();
 #endif
 
+=======
+>>>>>>> upstream/master
 #ifdef MODULE_ADAFRUIT_BLE
         adafruit_ble_task();
 #endif

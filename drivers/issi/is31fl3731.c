@@ -15,6 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+<<<<<<< HEAD
 #ifdef __AVR__
 #include <avr/interrupt.h>
 #include <avr/io.h>
@@ -23,10 +24,11 @@
 #include "wait.h"
 #endif
 
+=======
+>>>>>>> upstream/master
 #include "is31fl3731.h"
-#include <string.h>
 #include "i2c_master.h"
-#include "progmem.h"
+#include "wait.h"
 
 // This is a 7-bit address, that gets left-shifted and bit 0
 // set to 0 for write, 1 for read (as per I2C protocol)
@@ -73,8 +75,13 @@ uint8_t g_twi_transfer_buffer[20];
 uint8_t g_pwm_buffer[DRIVER_COUNT][144];
 bool g_pwm_buffer_update_required[DRIVER_COUNT] = { false };
 
+<<<<<<< HEAD
 uint8_t g_led_control_registers[DRIVER_COUNT][18] = { { 0 }, { 0 } };
 bool g_led_control_registers_update_required[DRIVER_COUNT] = { false };
+=======
+uint8_t g_led_control_registers[DRIVER_COUNT][18]             = {{0}};
+bool    g_led_control_registers_update_required[DRIVER_COUNT] = {false};
+>>>>>>> upstream/master
 
 // This is the bit pattern in the LED control registers
 // (for matrix A, add one to register for matrix B)
@@ -146,6 +153,7 @@ void IS31FL3731_init( uint8_t addr )
     IS31FL3731_write_register( addr, ISSI_COMMANDREGISTER, ISSI_BANK_FUNCTIONREG );
 
     // enable software shutdown
+<<<<<<< HEAD
     IS31FL3731_write_register( addr, ISSI_REG_SHUTDOWN, 0x00 );
     // this delay was copied from other drivers, might not be needed
     #ifdef __AVR__
@@ -153,6 +161,12 @@ void IS31FL3731_init( uint8_t addr )
     #else
     wait_ms(10);
     #endif
+=======
+    IS31FL3731_write_register(addr, ISSI_REG_SHUTDOWN, 0x00);
+
+    // this delay was copied from other drivers, might not be needed
+    wait_ms(10);
+>>>>>>> upstream/master
 
     // picture mode
     IS31FL3731_write_register( addr, ISSI_REG_CONFIG, ISSI_REG_CONFIG_PICTUREMODE );

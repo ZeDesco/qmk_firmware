@@ -2,6 +2,7 @@
 #include "rgb_stuff.h"
 #include "eeprom.h"
 
+<<<<<<< HEAD
 #if defined(RGBLIGHT_ENABLE)
 extern rgblight_config_t rgblight_config;
 bool                     has_initialized;
@@ -83,10 +84,16 @@ void matrix_scan_indicator(void) {
     }
 }
 #endif  // INDICATOR_LIGHTS
+=======
+bool    has_initialized;
+
+void rgblight_sethsv_default_helper(uint8_t index) { rgblight_sethsv_at(rgblight_get_hue(), rgblight_get_sat(), rgblight_get_val(), index); }
+>>>>>>> upstream/master
 
 #ifdef RGBLIGHT_TWINKLE
 static rgblight_fadeout lights[RGBLED_NUM];
 
+<<<<<<< HEAD
 __attribute__((weak)) bool rgblight_twinkle_is_led_used_keymap(uint8_t index) { return false; }
 
 bool rgblight_twinkle_is_led_used(uint8_t index) {
@@ -130,8 +137,12 @@ bool rgblight_twinkle_is_led_used(uint8_t index) {
     }
 }
 
+=======
+/* Handler for fading/twinkling effect */
+>>>>>>> upstream/master
 void scan_rgblight_fadeout(void) {  // Don't effing change this function .... rgblight_sethsv is supppppper intensive
     bool litup = false;
+
     for (uint8_t light_index = 0; light_index < RGBLED_NUM; ++light_index) {
         if (lights[light_index].enabled && timer_elapsed(lights[light_index].timer) > 10) {
             rgblight_fadeout *light = &lights[light_index];
@@ -161,10 +172,8 @@ void start_rgb_light(void) {
     uint8_t indices_count  = 0;
     uint8_t min_life       = 0xFF;
     uint8_t min_life_index = -1;
+
     for (uint8_t index = 0; index < RGBLED_NUM; ++index) {
-        if (rgblight_twinkle_is_led_used(index)) {
-            continue;
-        }
         if (lights[index].enabled) {
             if (min_life_index == -1 || lights[index].life < min_life) {
                 min_life       = lights[index].life;
@@ -189,17 +198,28 @@ void start_rgb_light(void) {
     light->timer            = timer_read();
     light->life             = 0xC0 + rand() % 0x40;
 
-    light->hue = rgblight_config.hue + (rand() % 0xB4) - 0x54;
+    light->hue = rgblight_get_hue() + (rand() % 0xB4) - 0x54;
 
     rgblight_sethsv_at(light->hue, 255, light->life, light_index);
 }
 #endif
 
+<<<<<<< HEAD
 bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record) {
+=======
+bool process_record_user_rgb_light(uint16_t keycode, keyrecord_t *record) {
+    uint16_t temp_keycode = keycode;
+    // Filter out the actual keycode from MT and LT keys.
+>>>>>>> upstream/master
     if ((keycode >= QK_MOD_TAP && keycode <= QK_MOD_TAP_MAX) || (keycode >= QK_LAYER_TAP && keycode <= QK_LAYER_TAP_MAX)) {
         keycode = keycode & 0xFF;
     }
+<<<<<<< HEAD
     switch (keycode) {
+=======
+
+    switch (temp_keycode) {
+>>>>>>> upstream/master
 #ifdef RGBLIGHT_TWINKLE
         case KC_A ... KC_SLASH:
         case KC_F1 ... KC_F12:
@@ -212,6 +232,7 @@ bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record) {
             }
             return true;
             break;
+<<<<<<< HEAD
 #endif                  // RGBLIGHT_TWINKLE
         case KC_RGB_T:  // This allows me to use underglow as layer indication, or as normal
 #if defined(RGBLIGHT_ENABLE) || defined(RGB_MATRIX_ENABLE)
@@ -238,20 +259,37 @@ bool process_record_user_rgb(uint16_t keycode, keyrecord_t *record) {
             return true;
             break;
 #endif  // RGBLIGHT_ENABLE
+=======
+#endif  // RGBLIGHT_TWINKLE
+>>>>>>> upstream/master
     }
     return true;
 }
 
+<<<<<<< HEAD
 void keyboard_post_init_rgb(void) {
 #if defined(RGBLIGHT_ENABLE) && defined(RGBLIGHT_STARTUP_ANIMATION)
     bool is_enabled = rgblight_config.enable;
+=======
+#if defined(RGBLIGHT_STARTUP_ANIMATION)
+static bool is_enabled;
+static bool is_rgblight_startup;
+static uint8_t old_hue;
+static uint16_t rgblight_startup_loop_timer;
+#endif
+
+void keyboard_post_init_rgb_light(void) {
+#if defined(RGBLIGHT_STARTUP_ANIMATION)
+    is_enabled = rgblight_is_enabled();
+>>>>>>> upstream/master
     if (userspace_config.rgb_layer_change) {
         rgblight_enable_noeeprom();
     }
-    if (rgblight_config.enable) {
-        layer_state_set_user(layer_state);
-        uint16_t old_hue = rgblight_config.hue;
+    if (rgblight_is_enabled()) {
+        layer_state_set_rgb_light(layer_state);
+        old_hue = rgblight_get_hue();
         rgblight_mode_noeeprom(RGBLIGHT_MODE_STATIC_LIGHT);
+<<<<<<< HEAD
         for (uint16_t i = 255; i > 0; i--) {
             rgblight_sethsv_noeeprom((i + old_hue) % 255, 255, 255);
             matrix_scan();
@@ -268,15 +306,56 @@ void keyboard_post_init_rgb(void) {
 
 void matrix_scan_rgb(void) {
 #ifdef RGBLIGHT_TWINKLE
+=======
+        is_rgblight_startup = true;
+    }
+#endif
+    layer_state_set_rgb_light(layer_state);
+}
+
+void matrix_scan_rgb_light(void) {
+#    ifdef RGBLIGHT_TWINKLE
+>>>>>>> upstream/master
     scan_rgblight_fadeout();
 #endif  // RGBLIGHT_ENABLE
 
+<<<<<<< HEAD
 #ifdef INDICATOR_LIGHTS
     matrix_scan_indicator();
 #endif
 }
 
 layer_state_t layer_state_set_rgb(layer_state_t state) {
+=======
+#if defined(RGBLIGHT_STARTUP_ANIMATION)
+    if (is_rgblight_startup && is_keyboard_master()) {
+        if (timer_elapsed(rgblight_startup_loop_timer) > 10) {
+            static uint8_t counter;
+            counter++;
+            rgblight_sethsv_noeeprom((counter + old_hue) % 255, 255, 255);
+            rgblight_startup_loop_timer = timer_read();
+            if (counter == 255) {
+                is_rgblight_startup = false;
+                if (!is_enabled) {
+                    rgblight_disable_noeeprom();
+                }
+                if (userspace_config.rgb_layer_change) {
+                    layer_state_set_rgb_light(layer_state);
+                }
+            }
+        }
+    }
+#endif
+}
+
+void rgblight_set_hsv_and_mode(uint8_t hue, uint8_t sat, uint8_t val, uint8_t mode) {
+    rgblight_sethsv_noeeprom(hue, sat, val);
+    wait_us(175);  // Add a slight delay between color and mode to ensure it's processed correctly
+    rgblight_mode_noeeprom(mode);
+}
+
+layer_state_t layer_state_set_rgb_light(layer_state_t state) {
+>>>>>>> upstream/master
 #ifdef RGBLIGHT_ENABLE
     if (userspace_config.rgb_layer_change) {
         switch (biton32(state)) {
@@ -343,6 +422,7 @@ layer_state_t layer_state_set_rgb(layer_state_t state) {
 
     return state;
 }
+<<<<<<< HEAD
 
 #ifdef RGB_MATRIX_ENABLE
 #    include "lib/lib8tion/lib8tion.h"
@@ -379,3 +459,5 @@ void rgb_matrix_layer_helper(uint8_t hue, uint8_t sat, uint8_t val, uint8_t mode
     }
 }
 #endif
+=======
+>>>>>>> upstream/master

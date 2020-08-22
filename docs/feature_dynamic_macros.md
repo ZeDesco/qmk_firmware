@@ -6,6 +6,7 @@ You can store one or two macros and they may have a combined total of 128 keypre
 
 To enable them, first add a new element to the end of your `keycodes` enum — `DYNAMIC_MACRO_RANGE`:
 
+<<<<<<< HEAD
 ```c
 enum keycodes {
 	QWERTY = SAFE_RANGE,
@@ -21,6 +22,25 @@ enum keycodes {
 ```
 
 Your `keycodes` enum may have a slightly different name. You must add `DYNAMIC_MACRO_RANGE` as the last element because `dynamic_macros.h` will add some more keycodes after it.
+=======
+|Key               |Alias     |Description                                        |
+|------------------|----------|---------------------------------------------------|
+|`DYN_REC_START1`  |`DM_REC1` |Start recording Macro 1                            |
+|`DYN_REC_START2`  |`DM_REC2` |Start recording Macro 2                            |
+|`DYN_MACRO_PLAY1` |`DM_PLY1` |Replay Macro 1                                     |
+|`DYN_MACRO_PLAY2` |`DM_PLY2` |Replay Macro 2                                     |
+|`DYN_REC_STOP`    |`DM_RSTP` |Finish the macro that is currently being recorded. |
+
+That should be everything necessary. 
+
+To start recording the macro, press either `DYN_REC_START1` or `DYN_REC_START2`. 
+
+To finish the recording, press the `DYN_REC_STOP` layer button. You can also press `DYN_REC_START1` or `DYN_REC_START2` again to stop the recording.
+
+To replay the macro, press either `DYN_MACRO_PLAY1` or `DYN_MACRO_PLAY2`.
+
+It is possible to replay a macro as part of a macro. It's ok to replay macro 2 while recording macro 1 and vice versa but never create recursive macros i.e. macro 1 that replays macro 1. If you do so and the keyboard will get unresponsive, unplug the keyboard and plug it again.  You can disable this completely by defining `DYNAMIC_MACRO_NO_NESTING`  in your `config.h` file.
+>>>>>>> upstream/master
 
 Below it, include the `dynamic_macro.h` header:
 

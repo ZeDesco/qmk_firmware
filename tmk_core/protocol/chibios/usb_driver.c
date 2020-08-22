@@ -109,6 +109,7 @@ static msg_t _putt(void *ip, uint8_t b, systime_t timeout) {
   return obqPutTimeout(&((QMKUSBDriver *)ip)->obqueue, b, timeout);
 }
 
+<<<<<<< HEAD
 static msg_t _gett(void *ip, systime_t timeout) {
 
   return ibqGetTimeout(&((QMKUSBDriver *)ip)->ibqueue, timeout);
@@ -128,6 +129,17 @@ static const struct QMKUSBDriverVMT vmt = {
   _write, _read, _put, _get,
   _putt, _gett, _writet, _readt
 };
+=======
+static msg_t _putt(void *ip, uint8_t b, sysinterval_t timeout) { return obqPutTimeout(&((QMKUSBDriver *)ip)->obqueue, b, timeout); }
+
+static msg_t _gett(void *ip, sysinterval_t timeout) { return ibqGetTimeout(&((QMKUSBDriver *)ip)->ibqueue, timeout); }
+
+static size_t _writet(void *ip, const uint8_t *bp, size_t n, sysinterval_t timeout) { return obqWriteTimeout(&((QMKUSBDriver *)ip)->obqueue, bp, n, timeout); }
+
+static size_t _readt(void *ip, uint8_t *bp, size_t n, sysinterval_t timeout) { return ibqReadTimeout(&((QMKUSBDriver *)ip)->ibqueue, bp, n, timeout); }
+
+static const struct QMKUSBDriverVMT vmt = {0, _write, _read, _put, _get, _putt, _gett, _writet, _readt};
+>>>>>>> upstream/master
 
 /**
  * @brief   Notification of empty buffer released into the input buffers queue.

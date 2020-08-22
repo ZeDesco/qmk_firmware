@@ -49,6 +49,7 @@ typedef struct PACKED {
 } effect_params_t;
 
 typedef struct PACKED {
+<<<<<<< HEAD
   // Global tick at 20 Hz
   uint32_t tick;
   // Ticks since this key was last hit.
@@ -58,6 +59,10 @@ typedef struct PACKED {
 typedef struct PACKED {
 	uint8_t x;
 	uint8_t y;
+=======
+    uint8_t x;
+    uint8_t y;
+>>>>>>> upstream/master
 } point_t;
 
 #define HAS_FLAGS(bits, flags) ((bits & flags) == flags)
@@ -68,6 +73,7 @@ typedef struct PACKED {
 #define LED_FLAG_MODIFIER 0x01
 #define LED_FLAG_UNDERGLOW 0x02
 #define LED_FLAG_KEYLIGHT 0x04
+#define LED_FLAG_INDICATOR 0x08
 
 #define NO_LED 255
 

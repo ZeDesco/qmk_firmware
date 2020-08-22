@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Advanced Keycodes
 
 Your keymap can include keycodes that are more advanced than normal, for example keys that switch layers or send modifiers when held, but send regular keycodes when tapped. This page documents the functions that are available to you.
@@ -57,6 +58,9 @@ Layers stack on top of each other in numerical order. When determining what a ke
 Sometimes, you might want to switch between layers in a macro or as part of a tap dance routine. `layer_on` activates a layer, and `layer_off` deactivates it. More layer-related functions can be found in [action_layer.h](https://github.com/qmk/qmk_firmware/blob/master/tmk_core/common/action_layer.h).
 
 # Modifier Keys
+=======
+# Modifier Keys :id=modifier-keys
+>>>>>>> upstream/master
 
 These allow you to combine a modifier with a keycode. When pressed, the keydown event for the modifier, then `kc` will be sent. On release, the keyup event for `kc`, then the modifier will be sent.
 
@@ -64,11 +68,11 @@ These allow you to combine a modifier with a keycode. When pressed, the keydown 
 |----------|-------------------------------|----------------------------------------------------|
 |`LCTL(kc)`|`C(kc)`                        |Hold Left Control and press `kc`                    |
 |`LSFT(kc)`|`S(kc)`                        |Hold Left Shift and press `kc`                      |
-|`LALT(kc)`|`A(kc)`                        |Hold Left Alt and press `kc`                        |
+|`LALT(kc)`|`A(kc)`, `LOPT(kc)`            |Hold Left Alt and press `kc`                        |
 |`LGUI(kc)`|`G(kc)`, `LCMD(kc)`, `LWIN(kc)`|Hold Left GUI and press `kc`                        |
 |`RCTL(kc)`|                               |Hold Right Control and press `kc`                   |
 |`RSFT(kc)`|                               |Hold Right Shift and press `kc`                     |
-|`RALT(kc)`|`ALGR(kc)`                     |Hold Right Alt and press `kc`                       |
+|`RALT(kc)`|`ROPT(kc)`, `ALGR(kc)`         |Hold Right Alt and press `kc`                       |
 |`RGUI(kc)`|`RCMD(kc)`, `LWIN(kc)`         |Hold Right GUI and press `kc`                       |
 |`SGUI(kc)`|`SCMD(kc)`, `SWIN(kc)`         |Hold Left Shift and GUI and press `kc`              |
 |`LCA(kc)` |                               |Hold Left Control and Alt and press `kc`            |
@@ -76,6 +80,7 @@ These allow you to combine a modifier with a keycode. When pressed, the keydown 
 |`MEH(kc)` |                               |Hold Left Control, Shift and Alt and press `kc`     |
 |`HYPR(kc)`|                               |Hold Left Control, Shift, Alt and GUI and press `kc`|
 
+<<<<<<< HEAD
 You can also chain them, for example `LCTL(LALT(KC_DEL))` makes a key that sends Control+Alt+Delete with a single keypress.
 
 # Mod-Tap
@@ -300,29 +305,26 @@ To enable `tapping force hold`, add the following to your `config.h`:
 ```
 
 When the user holds a key after tap, this repeats the tapped key rather to hold a modifier key.  This allows to use auto repeat for the tapped key.  
+=======
+You can also chain them, for example `LCTL(LALT(KC_DEL))` or `C(A(KC_DEL))` makes a key that sends Control+Alt+Delete with a single keypress.
+>>>>>>> upstream/master
 
-Example:
+# Legacy Content :id=legacy-content
 
-- SFT_T(KC_A) Down
-- SFT_T(KC_A) Up
-- SFT_T(KC_A) Down
-- wait more than tapping term...
-- SFT_T(KC_A) Up
+This page used to encompass a large set of features. We have moved many sections that used to be part of this page to their own pages. Everything below this point is simply a redirect so that people following old links on the web find what they're looking for.
 
-With default settings, `a` will be sent on the first release, then `a` will be sent on the second press allowing the computer to trigger its auto repeat function.
+## Layers :id=switching-and-toggling-layers
 
-With `TAPPING_FORCE_HOLD`, the second press will be interpreted as a Shift, allowing to use it as a modifier shortly after having used it as a tap.
+* [Layers](feature_layers.md)
 
-!> `TAPPING_FORCE_HOLD` will break anything that uses tapping toggles (Such as the `TT` layer keycode, and the One Shot Tapping Toggle).
+## Mod-Tap :id=mod-tap
 
-## Retro Tapping
+* [Mod-Tap](mod_tap.md)
 
-To enable `retro tapping`, add the following to your `config.h`: 
+## One Shot Keys :id=one-shot-keys
 
-```c
-#define RETRO_TAPPING
-```
+* [One Shot Keys](one_shot_keys.md)
 
-Holding and releasing a dual function key without pressing another key will result in nothing happening. With retro tapping enabled, releasing the key without pressing another will send the original keycode even if it is outside the tapping term.
+## Tap-Hold Configuration Options :id=tap-hold-configuration-options
 
-For instance, holding and releasing `LT(2, KC_SPACE)` without hitting another key will result in nothing happening. With this enabled, it will send `KC_SPACE` instead.
+* [Tap-Hold Configuration Options](tap_hold.md)

@@ -16,6 +16,7 @@
 
 #include "process_unicodemap.h"
 
+<<<<<<< HEAD
 void register_hex32(uint32_t hex) {
   bool onzerostart = true;
   for(int i = 7; i >= 0; i--) {
@@ -44,6 +45,18 @@ uint16_t unicodemap_index(uint16_t keycode) {
 
     bool shift = unicode_saved_mods & MOD_MASK_SHIFT, caps = IS_HOST_LED_ON(USB_LED_CAPS_LOCK);
     if (shift ^ caps) { index >>= 7; }
+=======
+__attribute__((weak)) uint16_t unicodemap_index(uint16_t keycode) {
+    if (keycode >= QK_UNICODEMAP_PAIR) {
+        // Keycode is a pair: extract index based on Shift / Caps Lock state
+        uint16_t index = keycode - QK_UNICODEMAP_PAIR;
+
+        bool shift = unicode_saved_mods & MOD_MASK_SHIFT;
+        bool caps  = IS_HOST_LED_ON(USB_LED_CAPS_LOCK);
+        if (shift ^ caps) {
+            index >>= 7;
+        }
+>>>>>>> upstream/master
 
     return index & 0x7F;
   } else {
@@ -53,6 +66,7 @@ uint16_t unicodemap_index(uint16_t keycode) {
 }
 
 bool process_unicodemap(uint16_t keycode, keyrecord_t *record) {
+<<<<<<< HEAD
   if (keycode >= QK_UNICODEMAP && keycode <= QK_UNICODEMAP_PAIR_MAX && record->event.pressed) {
     unicode_input_start();
 
@@ -72,6 +86,11 @@ bool process_unicodemap(uint16_t keycode, keyrecord_t *record) {
     } else {
       register_hex32(code);
       unicode_input_finish();
+=======
+    if (keycode >= QK_UNICODEMAP && keycode <= QK_UNICODEMAP_PAIR_MAX && record->event.pressed) {
+        uint32_t code_point = pgm_read_dword(unicode_map + unicodemap_index(keycode));
+        register_unicode(code_point);
+>>>>>>> upstream/master
     }
   }
   return true;

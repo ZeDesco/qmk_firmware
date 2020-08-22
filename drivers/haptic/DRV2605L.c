@@ -34,6 +34,7 @@ void DRV_write(uint8_t drv_register, uint8_t settings) {
 }
 
 uint8_t DRV_read(uint8_t regaddress) {
+<<<<<<< HEAD
 #ifdef __AVR__
   i2c_readReg(DRV2605L_BASE_ADDRESS << 1,
     regaddress, DRV2605L_read_buffer, 1, 100);
@@ -49,6 +50,12 @@ uint8_t DRV_read(uint8_t regaddress) {
   DRV2605L_read_register = (uint8_t)DRV2605L_read_buffer[0];
 #endif
 return DRV2605L_read_register;
+=======
+    i2c_readReg(DRV2605L_BASE_ADDRESS << 1, regaddress, DRV2605L_read_buffer, 1, 100);
+    DRV2605L_read_register = (uint8_t)DRV2605L_read_buffer[0];
+
+    return DRV2605L_read_register;
+>>>>>>> upstream/master
 }
 
 void DRV_init(void)
@@ -121,9 +128,19 @@ void DRV_init(void)
   DRV_write(DRV_GO, 0x01);
 }
 
+<<<<<<< HEAD
 void DRV_pulse(uint8_t sequence)
 {
   DRV_write(DRV_GO, 0x00);
   DRV_write(DRV_WAVEFORM_SEQ_1, sequence);
   DRV_write(DRV_GO, 0x01);
 }
+=======
+void DRV_amplitude(uint8_t amplitude) { DRV_write(DRV_RTP_INPUT, amplitude); }
+
+void DRV_pulse(uint8_t sequence) {
+    DRV_write(DRV_GO, 0x00);
+    DRV_write(DRV_WAVEFORM_SEQ_1, sequence);
+    DRV_write(DRV_GO, 0x01);
+}
+>>>>>>> upstream/master

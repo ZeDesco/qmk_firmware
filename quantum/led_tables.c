@@ -39,6 +39,7 @@ const uint8_t CIE1931_CURVE[256] PROGMEM = {
 };
 #endif
 
+<<<<<<< HEAD
 #ifdef USE_LED_BREATHING_TABLE
 const uint8_t LED_BREATHING_TABLE[256] PROGMEM = {
   0, 0, 0, 0, 1, 1, 1, 2, 2, 3, 4, 5, 5, 6, 7, 9,
@@ -59,3 +60,6 @@ const uint8_t LED_BREATHING_TABLE[256] PROGMEM = {
   10, 9, 7, 6, 5, 5, 4, 3, 2, 2, 1, 1, 1, 0, 0, 0
 };
 #endif
+=======
+// clang-format on
+>>>>>>> upstream/master

@@ -120,29 +120,43 @@ void send_mouse(report_mouse_t *report)
 #endif //MOUSEKEY_ENABLE
 }
 
+<<<<<<< HEAD
 void send_system(uint16_t data)
 {
+=======
+>>>>>>> upstream/master
 #ifdef EXTRAKEY_ENABLE
+void send_extra(uint8_t report_id, uint16_t data) {
     uint32_t irqflags;
 
     irqflags = __get_PRIMASK();
     __disable_irq();
     __DMB();
 
-    udi_hid_exk_report.desc.report_id = REPORT_ID_SYSTEM;
-    if (data != 0) data = data - SYSTEM_POWER_DOWN + 1;
+    udi_hid_exk_report.desc.report_id   = report_id;
     udi_hid_exk_report.desc.report_data = data;
     udi_hid_exk_b_report_valid = 1;
     udi_hid_exk_send_report();
 
     __DMB();
     __set_PRIMASK(irqflags);
+<<<<<<< HEAD
 #endif //EXTRAKEY_ENABLE
+=======
+}
+#endif  // EXTRAKEY_ENABLE
+
+void send_system(uint16_t data) {
+#ifdef EXTRAKEY_ENABLE
+    send_extra(REPORT_ID_SYSTEM, data);
+#endif  // EXTRAKEY_ENABLE
+>>>>>>> upstream/master
 }
 
 void send_consumer(uint16_t data)
 {
 #ifdef EXTRAKEY_ENABLE
+<<<<<<< HEAD
     uint32_t irqflags;
 
     irqflags = __get_PRIMASK();
@@ -157,6 +171,10 @@ void send_consumer(uint16_t data)
     __DMB();
     __set_PRIMASK(irqflags);
 #endif //EXTRAKEY_ENABLE
+=======
+    send_extra(REPORT_ID_CONSUMER, data);
+#endif  // EXTRAKEY_ENABLE
+>>>>>>> upstream/master
 }
 
 void main_subtask_usb_state(void)
@@ -236,11 +254,22 @@ void main_subtask_usb_extra_device(void)
     }
 }
 
+<<<<<<< HEAD
 void main_subtasks(void)
 {
+=======
+#ifdef RAW_ENABLE
+void main_subtask_raw(void) { udi_hid_raw_receive_report(); }
+#endif
+
+void main_subtasks(void) {
+>>>>>>> upstream/master
     main_subtask_usb_state();
     main_subtask_power_check();
     main_subtask_usb_extra_device();
+#ifdef RAW_ENABLE
+    main_subtask_raw();
+#endif
 }
 
 int main(void)

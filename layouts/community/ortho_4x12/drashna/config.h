@@ -45,6 +45,12 @@
 #    endif
 #endif
 
+<<<<<<< HEAD
+=======
+#define EEPROM_I2C_RM24C512C
+
+#define ENCODER_DIRECTION_FLIP
+>>>>>>> upstream/master
 /*
  * MIDI options
  */

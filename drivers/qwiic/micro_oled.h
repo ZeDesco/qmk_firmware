@@ -63,8 +63,13 @@ void draw_string(uint8_t x, uint8_t y, char * string, uint8_t color, uint8_t mod
 #ifndef LCDWIDTH
 #define LCDWIDTH      64
 #endif
+<<<<<<< HEAD
 #ifndef LCDWIDTH
 #define LCDHEIGHT     48
+=======
+#ifndef LCDHEIGHT
+#    define LCDHEIGHT 48
+>>>>>>> upstream/master
 #endif
 #define FONTHEADERSIZE    6
 
@@ -112,6 +117,7 @@ void draw_string(uint8_t x, uint8_t y, char * string, uint8_t color, uint8_t mod
 #define VERTICALLEFTHORIZONTALSCROLL  0x2A
 
 typedef enum CMD {
+<<<<<<< HEAD
   CMD_CLEAR,      //0
   CMD_INVERT,     //1
   CMD_CONTRAST,   //2
@@ -132,3 +138,25 @@ typedef enum CMD {
   CMD_SETCOLOR,   //17
   CMD_SETDRAWMODE   //18
 } commCommand_t;
+=======
+    CMD_CLEAR,         // 0
+    CMD_INVERT,        // 1
+    CMD_CONTRAST,      // 2
+    CMD_DISPLAY,       // 3
+    CMD_SETCURSOR,     // 4
+    CMD_PIXEL,         // 5
+    CMD_LINE,          // 6
+    CMD_LINEH,         // 7
+    CMD_LINEV,         // 8
+    CMD_RECT,          // 9
+    CMD_RECTFILL,      // 10
+    CMD_CIRCLE,        // 11
+    CMD_CIRCLEFILL,    // 12
+    CMD_DRAWCHAR,      // 13
+    CMD_DRAWBITMAP,    // 14
+    CMD_GETLCDWIDTH,   // 15
+    CMD_GETLCDHEIGHT,  // 16
+    CMD_SETCOLOR,      // 17
+    CMD_SETDRAWMODE    // 18
+} commCommand_t;
+>>>>>>> upstream/master

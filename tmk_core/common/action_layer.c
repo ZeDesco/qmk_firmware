@@ -54,9 +54,13 @@ static void default_layer_state_set(layer_state_t state) {
  *
  * Print out the hex value of the 32-bit default layer state, as well as the value of the highest bit.
  */
+<<<<<<< HEAD
 void default_layer_debug(void) {
   dprintf("%08lX(%u)", default_layer_state, biton32(default_layer_state));
 }
+=======
+void default_layer_debug(void) { dprintf("%08lX(%u)", default_layer_state, get_highest_layer(default_layer_state)); }
+>>>>>>> upstream/master
 
 /** \brief Default Layer Set
  *
@@ -214,9 +218,13 @@ void layer_xor(layer_state_t state) {
  *
  * Print out the hex value of the 32-bit layer state, as well as the value of the highest bit.
  */
+<<<<<<< HEAD
 void layer_debug(void) {
   dprintf("%08lX(%u)", layer_state, biton32(layer_state));
 }
+=======
+void layer_debug(void) { dprintf("%08lX(%u)", layer_state, get_highest_layer(layer_state)); }
+>>>>>>> upstream/master
 #endif
 
 #if !defined(NO_ACTION_LAYER) && !defined(STRICT_LAYER_RELEASE)
@@ -298,6 +306,7 @@ action_t store_or_get_action(bool pressed, keypos_t key) {
  */
 uint8_t layer_switch_get_layer(keypos_t key) {
 #ifndef NO_ACTION_LAYER
+<<<<<<< HEAD
   action_t action;
   action.code = ACTION_TRANSPARENT;
 
@@ -309,6 +318,20 @@ uint8_t layer_switch_get_layer(keypos_t key) {
       if (action.code != ACTION_TRANSPARENT) {
           return i;
       }
+=======
+    action_t action;
+    action.code = ACTION_TRANSPARENT;
+
+    layer_state_t layers = layer_state | default_layer_state;
+    /* check top layer first */
+    for (int8_t i = MAX_LAYER - 1; i >= 0; i--) {
+        if (layers & (1UL << i)) {
+            action = action_for_key(i, key);
+            if (action.code != ACTION_TRANSPARENT) {
+                return i;
+            }
+        }
+>>>>>>> upstream/master
     }
   }
   /* fall back to layer 0 */

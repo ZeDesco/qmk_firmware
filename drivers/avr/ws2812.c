@@ -1,4 +1,5 @@
 /*
+<<<<<<< HEAD
 * light weight WS2812 lib V2.0b
 *
 * Controls WS2811/WS2812/WS2812B RGB-LEDs
@@ -21,12 +22,36 @@
 * along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+=======
+ * light weight WS2812 lib V2.0b
+ *
+ * Controls WS2811/WS2812/WS2812B RGB-LEDs
+ * Author: Tim (cpldcpu@gmail.com)
+ *
+ * Jan 18th, 2014  v2.0b Initial Version
+ * Nov 29th, 2015  v2.3  Added SK6812RGBW support
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+>>>>>>> upstream/master
 #include "ws2812.h"
 #include <avr/interrupt.h>
 #include <avr/io.h>
 #include <util/delay.h>
 #include "debug.h"
 
+<<<<<<< HEAD
 #if !defined(LED_ARRAY) && defined(RGB_MATRIX_ENABLE)
 // LED color buffer
 LED_TYPE led[DRIVER_LED_TOTAL];
@@ -226,6 +251,30 @@ void ws2812_sendarray(uint8_t *data,uint16_t datlen)
   ws2812_sendarray_mask(data,datlen,_BV(RGB_DI_PIN & 0xF));
 }
 
+=======
+#define pinmask(pin) (_BV((pin)&0xF))
+
+/*
+ * Forward declare internal functions
+ *
+ * The functions take a byte-array and send to the data output as WS2812 bitstream.
+ * The length is the number of bytes to send - three per LED.
+ */
+
+static inline void ws2812_sendarray_mask(uint8_t *data, uint16_t datlen, uint8_t masklo, uint8_t maskhi);
+
+void ws2812_setleds(LED_TYPE *ledarray, uint16_t number_of_leds) {
+    DDRx_ADDRESS(RGB_DI_PIN) |= pinmask(RGB_DI_PIN);
+
+    uint8_t masklo = ~(pinmask(RGB_DI_PIN)) & PORTx_ADDRESS(RGB_DI_PIN);
+    uint8_t maskhi = pinmask(RGB_DI_PIN) | PORTx_ADDRESS(RGB_DI_PIN);
+
+    ws2812_sendarray_mask((uint8_t *)ledarray, number_of_leds * sizeof(LED_TYPE), masklo, maskhi);
+
+    _delay_us(WS2812_TRST_US);
+}
+
+>>>>>>> upstream/master
 /*
   This routine writes an array of bytes with RGB values to the Dataout pin
   using the fast 800kHz clockless WS2811/2812 protocol.
@@ -287,6 +336,7 @@ void ws2812_sendarray(uint8_t *data,uint16_t datlen)
 #define w_nop8  w_nop4 w_nop4
 #define w_nop16 w_nop8 w_nop8
 
+<<<<<<< HEAD
 void inline ws2812_sendarray_mask(uint8_t *data,uint16_t datlen,uint8_t maskhi)
 {
   uint8_t curbyte,ctr,masklo;
@@ -298,6 +348,13 @@ void inline ws2812_sendarray_mask(uint8_t *data,uint16_t datlen,uint8_t maskhi)
   maskhi |=        _SFR_IO8((RGB_DI_PIN >> 4) + 2);
   sreg_prev=SREG;
   cli();
+=======
+static inline void ws2812_sendarray_mask(uint8_t *data, uint16_t datlen, uint8_t masklo, uint8_t maskhi) {
+    uint8_t curbyte, ctr, sreg_prev;
+
+    sreg_prev = SREG;
+    cli();
+>>>>>>> upstream/master
 
   while (datlen--) {
     curbyte=(*data++);
@@ -356,12 +413,20 @@ w_nop8
 w_nop16
 #endif
 
+<<<<<<< HEAD
     "       dec   %0    \n\t"    //  '1' [+2] '0' [+2]
     "       brne  loop%=\n\t"    //  '1' [+3] '0' [+4]
     :	"=&d" (ctr)
     :	"r" (curbyte), "I" (_SFR_IO_ADDR(_SFR_IO8((RGB_DI_PIN >> 4) + 2))), "r" (maskhi), "r" (masklo)
     );
   }
+=======
+                     "       dec   %0    \n\t"  //  '1' [+2] '0' [+2]
+                     "       brne  loop%=\n\t"  //  '1' [+3] '0' [+4]
+                     : "=&d"(ctr)
+                     : "r"(curbyte), "I"(_SFR_IO_ADDR(PORTx_ADDRESS(RGB_DI_PIN))), "r"(maskhi), "r"(masklo));
+    }
+>>>>>>> upstream/master
 
   SREG=sreg_prev;
 }

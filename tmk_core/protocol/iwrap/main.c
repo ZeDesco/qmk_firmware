@@ -28,8 +28,13 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #include "action.h"
 #include "iwrap.h"
 #ifdef PROTOCOL_VUSB
+<<<<<<< HEAD
 #   include "vusb.h"
 #   include "usbdrv.h"
+=======
+#    include "vusb.h"
+#    include <usbdrv/usbdrv.h>
+>>>>>>> upstream/master
 #endif
 #include "uart.h"
 #include "suart.h"

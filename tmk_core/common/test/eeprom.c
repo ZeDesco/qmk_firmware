@@ -41,12 +41,21 @@ uint32_t eeprom_read_dword(const uint32_t *addr) {
 		| (eeprom_read_byte(p+2) << 16) | (eeprom_read_byte(p+3) << 24);
 }
 
+<<<<<<< HEAD
 void eeprom_read_block(void *buf, const void *addr, uint32_t len) {
 	const uint8_t *p = (const uint8_t *)addr;
 	uint8_t *dest = (uint8_t *)buf;
 	while (len--) {
 		*dest++ = eeprom_read_byte(p++);
 	}
+=======
+void eeprom_read_block(void *buf, const void *addr, size_t len) {
+    const uint8_t *p    = (const uint8_t *)addr;
+    uint8_t *      dest = (uint8_t *)buf;
+    while (len--) {
+        *dest++ = eeprom_read_byte(p++);
+    }
+>>>>>>> upstream/master
 }
 
 void eeprom_write_word(uint16_t *addr, uint16_t value) {
@@ -63,12 +72,21 @@ void eeprom_write_dword(uint32_t *addr, uint32_t value) {
 	eeprom_write_byte(p, value >> 24);
 }
 
+<<<<<<< HEAD
 void eeprom_write_block(const void *buf, void *addr, uint32_t len) {
 	uint8_t *p = (uint8_t *)addr;
 	const uint8_t *src = (const uint8_t *)buf;
 	while (len--) {
 		eeprom_write_byte(p++, *src++);
 	}
+=======
+void eeprom_write_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+    const uint8_t *src = (const uint8_t *)buf;
+    while (len--) {
+        eeprom_write_byte(p++, *src++);
+    }
+>>>>>>> upstream/master
 }
 
 void eeprom_update_byte(uint8_t *addr, uint8_t value) {
@@ -89,10 +107,19 @@ void eeprom_update_dword(uint32_t *addr, uint32_t value) {
 	eeprom_write_byte(p, value >> 24);
 }
 
+<<<<<<< HEAD
 void eeprom_update_block(const void *buf, void *addr, uint32_t len) {
 	uint8_t *p = (uint8_t *)addr;
 	const uint8_t *src = (const uint8_t *)buf;
 	while (len--) {
 		eeprom_write_byte(p++, *src++);
 	}
+=======
+void eeprom_update_block(const void *buf, void *addr, size_t len) {
+    uint8_t *      p   = (uint8_t *)addr;
+    const uint8_t *src = (const uint8_t *)buf;
+    while (len--) {
+        eeprom_write_byte(p++, *src++);
+    }
+>>>>>>> upstream/master
 }

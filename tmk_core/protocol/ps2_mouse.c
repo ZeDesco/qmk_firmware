@@ -70,6 +70,8 @@ __attribute__((weak))
 void ps2_mouse_init_user(void) {
 }
 
+__attribute__((weak)) void ps2_mouse_moved_user(report_mouse_t *mouse_report) {}
+
 void ps2_mouse_task(void) {
     static uint8_t buttons_prev = 0;
     extern int tp_buttons;
@@ -101,6 +103,9 @@ void ps2_mouse_task(void) {
 #if PS2_MOUSE_SCROLL_BTN_MASK
         ps2_mouse_scroll_button_task(&mouse_report);
 #endif
+        if (mouse_report.x || mouse_report.y || mouse_report.v) {
+            ps2_mouse_moved_user(&mouse_report);
+        }
 #ifdef PS2_MOUSE_DEBUG_HID
         // Used to debug the bytes sent to the host
         ps2_mouse_print_report(&mouse_report);
@@ -177,6 +182,23 @@ static inline void ps2_mouse_convert_report_to_hid(report_mouse_t *mouse_report)
     mouse_report->y = -mouse_report->y;
 #endif
 
+<<<<<<< HEAD
+=======
+#ifdef PS2_MOUSE_ROTATE
+    int8_t x = mouse_report->x;
+    int8_t y = mouse_report->y;
+#    if PS2_MOUSE_ROTATE == 90
+    mouse_report->x = y;
+    mouse_report->y = -x;
+#    elif PS2_MOUSE_ROTATE == 180
+    mouse_report->x = -x;
+    mouse_report->y = -y;
+#    elif PS2_MOUSE_ROTATE == 270
+    mouse_report->x = -y;
+    mouse_report->y = x;
+#    endif
+#endif
+>>>>>>> upstream/master
 }
 
 static inline void ps2_mouse_clear_report(report_mouse_t *mouse_report) {

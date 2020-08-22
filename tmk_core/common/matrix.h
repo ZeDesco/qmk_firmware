@@ -41,8 +41,14 @@ typedef  uint32_t   matrix_col_t;
 #error "MATRIX_ROWS: invalid value"
 #endif
 
+<<<<<<< HEAD
 #define MATRIX_IS_ON(row, col)  (matrix_get_row(row) && (1<<col))
 
+=======
+#define MATRIX_ROW_SHIFTER ((matrix_row_t)1)
+
+#define MATRIX_IS_ON(row, col) (matrix_get_row(row) && (1 << col))
+>>>>>>> upstream/master
 
 #ifdef __cplusplus
 extern "C" {
@@ -66,6 +72,8 @@ bool matrix_is_on(uint8_t row, uint8_t col);
 matrix_row_t matrix_get_row(uint8_t row);
 /* print matrix for debug */
 void matrix_print(void);
+/* delay between changing matrix pin state and reading values */
+void matrix_io_delay(void);
 
 
 /* power control */
@@ -82,11 +90,14 @@ void matrix_scan_kb(void);
 void matrix_init_user(void);
 void matrix_scan_user(void);
 
+<<<<<<< HEAD
 #ifdef I2C_SPLIT
 	void slave_matrix_init(void);
 	uint8_t slave_matrix_scan(void);
 #endif
 
+=======
+>>>>>>> upstream/master
 #ifdef __cplusplus
 }
 #endif

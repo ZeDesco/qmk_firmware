@@ -13,6 +13,18 @@ env:
   - MAKEFLAGS="-j3 --output-sync"
 services:
   - docker
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+      - llvm-toolchain-trusty-7
+    packages:
+    - pandoc
+    - diffutils
+    - dos2unix
+    - doxygen
+    - clang-format-7
+    - libstdc++-7-dev
 install:
   - npm install -g moxygen
 script:
@@ -20,6 +32,7 @@ script:
   - bash util/travis_test.sh
   - bash util/travis_build.sh
   - bash util/travis_docs.sh
+<<<<<<< HEAD
 addons:
   apt:
     packages:
@@ -28,6 +41,9 @@ addons:
     - dos2unix
     - doxygen
 after_success:
+=======
+after_script:
+>>>>>>> upstream/master
   bash util/travis_compiled_push.sh
 notifications:
   webhooks:

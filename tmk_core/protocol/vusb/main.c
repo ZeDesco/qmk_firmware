@@ -12,18 +12,38 @@
 #include <avr/wdt.h>
 #include <avr/sleep.h>
 #include <util/delay.h>
-#include "usbdrv.h"
-#include "oddebug.h"
+#include <usbdrv/usbdrv.h>
+#include <usbdrv/oddebug.h>
 #include "vusb.h"
 #include "keyboard.h"
 #include "host.h"
 #include "timer.h"
 #include "uart.h"
 #include "debug.h"
+<<<<<<< HEAD
 
 
 #define UART_BAUD_RATE 115200
 
+=======
+#include "suspend.h"
+#include "wait.h"
+#include "sendchar.h"
+
+#ifdef SLEEP_LED_ENABLE
+#    include "sleep_led.h"
+#endif
+
+#define UART_BAUD_RATE 115200
+
+#ifdef CONSOLE_ENABLE
+void console_task(void);
+#endif
+
+#ifdef RAW_ENABLE
+void raw_hid_task(void);
+#endif
+>>>>>>> upstream/master
 
 /* This is from main.c of USBaspLoader */
 static void initForUsbConnectivity(void)
@@ -38,11 +58,48 @@ static void initForUsbConnectivity(void)
         _delay_ms(1);
     }
     usbDeviceConnect();
+}
+
+static void usb_remote_wakeup(void) {
+    cli();
+
+    int8_t ddr_orig = USBDDR;
+    USBOUT |= (1 << USBMINUS);
+    USBDDR = ddr_orig | USBMASK;
+    USBOUT ^= USBMASK;
+
+    _delay_ms(25);
+
+    USBOUT ^= USBMASK;
+    USBDDR = ddr_orig;
+    USBOUT &= ~(1 << USBMINUS);
+
     sei();
 }
 
+<<<<<<< HEAD
 int main(void)
 {
+=======
+/** \brief Setup USB
+ *
+ * FIXME: Needs doc
+ */
+static void setup_usb(void) {
+    // debug("initForUsbConnectivity()\n");
+    initForUsbConnectivity();
+
+    // for Console_Task
+    print_set_sendchar(sendchar);
+}
+
+/** \brief Main
+ *
+ * FIXME: Needs doc
+ */
+int main(void) __attribute__((weak));
+int main(void) {
+>>>>>>> upstream/master
     bool suspended = false;
 #if USB_COUNT_SOF
     uint16_t last_timer = timer_read();
@@ -58,11 +115,16 @@ int main(void)
 #endif
     keyboard_setup();
 
-    keyboard_init();
     host_set_driver(vusb_driver());
+    setup_usb();
+    sei();
 
-    debug("initForUsbConnectivity()\n");
-    initForUsbConnectivity();
+    wait_ms(50);
+
+    keyboard_init();
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_init();
+#endif
 
     debug("main loop\n");
     while (1) {
@@ -70,11 +132,19 @@ int main(void)
         if (usbSofCount != 0) {
             suspended = false;
             usbSofCount = 0;
+<<<<<<< HEAD
             last_timer = timer_read();
+=======
+            last_timer  = timer_read();
+#    ifdef SLEEP_LED_ENABLE
+            sleep_led_disable();
+#    endif
+>>>>>>> upstream/master
         } else {
             // Suspend when no SOF in 3ms-10ms(7.1.7.4 Suspending of USB1.1)
             if (timer_elapsed(last_timer) > 5) {
                 suspended = true;
+<<<<<<< HEAD
 /*
                 uart_putchar('S');
                 _delay_ms(1);
@@ -88,18 +158,56 @@ int main(void)
                 _delay_ms(10);
                 uart_putchar('W');
 */
+=======
+#    ifdef SLEEP_LED_ENABLE
+                sleep_led_enable();
+#    endif
+                /*
+                                uart_putchar('S');
+                                _delay_ms(1);
+                                cli();
+                                set_sleep_mode(SLEEP_MODE_PWR_DOWN);
+                                sleep_enable();
+                                sleep_bod_disable();
+                                sei();
+                                sleep_cpu();
+                                sleep_disable();
+                                _delay_ms(10);
+                                uart_putchar('W');
+                */
+>>>>>>> upstream/master
             }
         }
 #endif
         if (!suspended) {
             usbPoll();
 
-            // TODO: configuration process is incosistent. it sometime fails.
+            // TODO: configuration process is inconsistent. it sometime fails.
             // To prevent failing to configure NOT scan keyboard during configuration
             if (usbConfiguration && usbInterruptIsReady()) {
                 keyboard_task();
+<<<<<<< HEAD
+=======
             }
             vusb_transfer_keyboard();
+
+#ifdef RAW_ENABLE
+            usbPoll();
+
+            if (usbConfiguration && usbInterruptIsReady3()) {
+                raw_hid_task();
+            }
+#endif
+#ifdef CONSOLE_ENABLE
+            usbPoll();
+
+            if (usbConfiguration && usbInterruptIsReady3()) {
+                console_task();
+>>>>>>> upstream/master
+            }
+#endif
+        } else if (suspend_wakeup_condition()) {
+            usb_remote_wakeup();
         }
     }
 }

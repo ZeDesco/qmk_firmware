@@ -3,11 +3,15 @@
 TRAVIS_COMMIT_MESSAGE="${TRAVIS_COMMIT_MESSAGE:-none}"
 TRAVIS_COMMIT_RANGE="${TRAVIS_COMMIT_RANGE:-HEAD~1..HEAD}"
 
+<<<<<<< HEAD
 # test force push
 #TRAVIS_COMMIT_RANGE="c287f1bfc5c8...81f62atc4c1d"
 
 NUM_IMPACTING_CHANGES=$(git diff --name-only -n 1 ${TRAVIS_COMMIT_RANGE} | grep -Ecv '^(docs/)')
 BRANCH=$(git rev-parse --abbrev-ref HEAD)
+=======
+NUM_CORE_CHANGES=$(echo "$QMK_CHANGES" | grep -Ecv -e '^(docs/)' -e '^(keyboards/)' -e '^(layouts/)' -e '^(util/)' -e '^(lib/python/)' -e '^(bin/qmk)' -e '^(requirements.txt)' -e '(.travis.yml)')
+>>>>>>> upstream/master
 
 if [[ "$TRAVIS_COMMIT_MESSAGE" == *"[skip test]"* ]]; then
     echo "Skipping due to commit message"
@@ -19,6 +23,7 @@ if [ "$BRANCH" != "master" ] && [ "$NUM_IMPACTING_CHANGES" == "0" ]; then
     exit 0
 fi
 
+<<<<<<< HEAD
 # if docker is installed - call make within the qmk docker image
 if command -v docker >/dev/null; then
   function make() {
@@ -27,3 +32,6 @@ if command -v docker >/dev/null; then
 fi
 
 make test:all
+=======
+exit $exit_code
+>>>>>>> upstream/master

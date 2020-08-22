@@ -47,13 +47,20 @@ void timer_init(void)
 #   error "Timer prescaler value is NOT vaild."
 #endif
 
-#ifndef __AVR_ATmega32A__
+#if defined(__AVR_ATmega32A__)
+    // Timer0 CTC mode
+    TCCR0 = _BV(WGM01) | prescaler;
+
+    OCR0  = TIMER_RAW_TOP;
+    TIMSK = _BV(OCIE0);
+#elif defined(__AVR_ATtiny85__)
     // Timer0 CTC mode
     TCCR0A = 0x02;
 
     TCCR0B = prescaler;
 
     OCR0A = TIMER_RAW_TOP;
+<<<<<<< HEAD
     TIMSK0 = (1<<OCIE0A);
 #else
     // Timer0 CTC mode
@@ -61,6 +68,16 @@ void timer_init(void)
 
     OCR0 = TIMER_RAW_TOP;
     TIMSK = (1 << OCIE0);
+=======
+    TIMSK = _BV(OCIE0A);
+#else
+    // Timer0 CTC mode
+    TCCR0A = _BV(WGM01);
+    TCCR0B = prescaler;
+
+    OCR0A  = TIMER_RAW_TOP;
+    TIMSK0 = _BV(OCIE0A);
+>>>>>>> upstream/master
 #endif
 }
 
